@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <title>
+    了解Window对象 |
+    
+    Hexo
+  </title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<script src="/js/pace.min.js"></script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article id="post-了解Window对象" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h1 class="article-title" itemprop="name">
+  了解Window对象
+</h1>
+
+
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/05/06/%E4%BA%86%E8%A7%A3Window%E5%AF%B9%E8%B1%A1/" class="article-date">
+  <time datetime="2020-05-06T09:50:43.000Z" itemprop="datePublished">2020-05-06</time>
+</a>
+      
+    </div>
+    
+
+    
+    
+<div class="tocbot"></div>
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+      
+      <h2 id="Window对象"><a href="#Window对象" class="headerlink" title="Window对象"></a>Window对象</h2><p>以下都是window对象的一部分</p>
+<h3 id="Document对象（DOM）"><a href="#Document对象（DOM）" class="headerlink" title="Document对象（DOM）"></a>Document对象（DOM）</h3><p><strong>属性：</strong></p>
+<p>document.body : 获取当前文档的body标签元素</p>
+<p>document.cookie : 设置或返回与当前文档有关的所有cookie</p>
+<p>document.documentURI 设置或返回文档的URI</p>
+<p>document.domain 返回文档的域名</p>
+<p><strong>方法：</strong></p>
+<p>document.createAttribute(‘attributeName’) : 创建一个属性节点</p>
+<p>document.createElement(‘elementName’) : 创建元素节点</p>
+<p>document.createTextNode(‘textContent’) 创建文本节点</p>
+<p>document.querySelector(‘CSS selector’) 返回匹配CSS选择器的第一个节点</p>
+<p>document.querySelectorAll(‘CSS selector’) 返回所有匹配的节点，返回NodeList对象</p>
+<h3 id="Location对象"><a href="#Location对象" class="headerlink" title="Location对象"></a>Location对象</h3><p>是window对象的一个部分，一般通过window.location属性访问</p>
+<p>假设当前页面的URL是：<a target="_blank" rel="noopener" href="http://example.com:1234/test/test.html#part2?name=John">http://example.com:1234/test/test.html#part2?name=John</a></p>
+<p>通过下面属性可以设置或返回我们想要的URL部分字段，它们都是可读写的字符串类型</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+<th>返回值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>host</td>
+<td>当前URL的主机名和端口号</td>
+<td>‘example.com:1234’</td>
+</tr>
+<tr>
+<td>hostname</td>
+<td>当前URL的主机名</td>
+<td>‘example.com’</td>
+</tr>
+<tr>
+<td>href</td>
+<td>当前显示的文档的完整 URL</td>
+<td>‘<a target="_blank" rel="noopener" href="http://example.com:1234/test/test.html#part2?name=John&#39;">http://example.com:1234/test/test.html#part2?name=John&#39;</a></td>
+</tr>
+<tr>
+<td>pathname</td>
+<td>当前URL的路径部分</td>
+<td>‘/test/test.html’</td>
+</tr>
+<tr>
+<td>port</td>
+<td>当前 URL 的端口部分</td>
+<td>‘1234’</td>
+</tr>
+<tr>
+<td>protocol</td>
+<td>当前 URL 的协议</td>
+<td>‘http:’</td>
+</tr>
+<tr>
+<td>search</td>
+<td>当前 URL 的查询部分（问号 ? 之后的部分）</td>
+<td>‘?name=John’</td>
+</tr>
+<tr>
+<td>hash</td>
+<td>URL 的锚部分（从 # 号开始的部分）</td>
+<td>‘#part2?name=John’</td>
+</tr>
+</tbody></table>
+<h3 id="History对象"><a href="#History对象" class="headerlink" title="History对象"></a>History对象</h3><p>window.history是用来保存用户在一个会话期间的网站访问记录，并提供相应的方法进行追溯。其成员如下：</p>
+<p><strong>属性</strong>：length、state</p>
+<p><strong>方法</strong>：back() 、forward() 、go(num) 、pushState(stateData,title,url)、replaceState(stateData,title,url)</p>
+<p><strong>事件</strong>：onpopstate、onhashchange</p>
+<p><strong>点击页面前进或后退按钮都会触发popstate事件，以下三个方法也都可以触发，事件对应的回调函数参数event可以访问state信息</strong></p>
+<p><code>history.back()</code> //回退到上一个访问记录</p>
+<p><code>history.forward()</code> //前进到下一个访问记录</p>
+<p><code>history.go(num)</code> //num为正数是前进，负数是后退，history.go(0)相当于刷新当前页面</p>
+<p><strong>HTML5规范为history对象新添加了两个方法，用来在浏览历史中添加和修改记录，不能跨域，不会造成页面刷新，不会触发onpopstate事件</strong></p>
+<p><code>history.pushState() </code>//在history栈中添加一个新的网址，当前location.href变为新网址</p>
+<p><code>history.replaceState()</code> //修改当前的访问记录网址</p>
+<p><strong>pushState()通过back()可以将网址修改为执行pushState操作之前的网址，而replaceState()则不能</strong>。</p>
+<p><strong>直接修改location.href是会引起页面刷新的，并且原来会话的history栈中当前网址往前的记录都会删除</strong>。</p>
+<p>以上两个方法的主要应用是配合AJAX，使得页面可以恢复在AJAX请求之前的状态，如果我们在页面中执行一个ajax操作，当操作成功（如更新页面的局部内容）后，我们通过代码调用pushState方法，设置一个新的url，这样看上去就像发起了一个全新的请求，实际上只是个ajax操作。这时回退按钮也能用了，可以通过编写代码，来响应这个回退按钮触发的popstate事件，在事件中让界面恢复到ajax请求之前的界面。</p>
+<p>也就是为AJAX动态请求的页面提供了与之对应的url记录，从而避免了前进或后退按钮导致页面崩溃或不存在</p>
+<h2 id="Navigator对象"><a href="#Navigator对象" class="headerlink" title="Navigator对象"></a>Navigator对象</h2><p>navigator对象包含浏览器相关的信息</p>
+<table>
+<thead>
+<tr>
+<th>appCodeName</th>
+<th>返回浏览器的代码名</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>appName</td>
+<td>返回浏览器的名称</td>
+</tr>
+<tr>
+<td>appVersion</td>
+<td>返回浏览器的平台和版本信息</td>
+</tr>
+<tr>
+<td>cookieEnabled</td>
+<td>返回指明浏览器中是否启用 cookie 的布尔值</td>
+</tr>
+<tr>
+<td>platform</td>
+<td>返回运行浏览器的操作系统平台</td>
+</tr>
+<tr>
+<td>userAgent</td>
+<td>返回由客户机发送服务器的user-agent 头部的值</td>
+</tr>
+</tbody></table>
+<h2 id="Screen对象"><a href="#Screen对象" class="headerlink" title="Screen对象"></a>Screen对象</h2><p>screen对象包含有关客户端显示屏的信息</p>
+<table>
+<thead>
+<tr>
+<th>availHeight</th>
+<th>返回屏幕的高度（不包括Windows下面的任务栏）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>availWidth</td>
+<td>返回屏幕的宽度（不包括Windows下面的任务栏）</td>
+</tr>
+<tr>
+<td>colorDepth</td>
+<td>返回目标设备或缓冲器上的调色板的比特深度</td>
+</tr>
+<tr>
+<td>pixelDepth</td>
+<td>返回屏幕的颜色分辨率（每象素的位数）</td>
+</tr>
+<tr>
+<td>height</td>
+<td>返回屏幕总高度</td>
+</tr>
+<tr>
+<td>width</td>
+<td>返回屏幕总宽度</td>
+</tr>
+</tbody></table>
+<h2 id="存储对象"><a href="#存储对象" class="headerlink" title="存储对象"></a>存储对象</h2><p>localStorage ： key-value键值对，没有过期时间</p>
+<p>sessionStorage ： key-value键值对，关闭当前浏览器窗口失效</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/05/06/%E4%BA%86%E8%A7%A3Window%E5%AF%B9%E8%B1%A1/" data-id="clpuo0yve000botmu8ams9lss" class="article-share-link">
+        Share
+      </a>
+      
+    </footer>
+
+  </div>
+
+  
+  
+<nav class="article-nav">
+  
+  <a href="/2020/09/01/%E5%88%9D%E8%AF%86react/" class="article-nav-link">
+    <strong class="article-nav-caption">Newer</strong>
+    <div class="article-nav-title">
+      
+      初识React
+      
+    </div>
+  </a>
+  
+  
+  <a href="/2020/04/26/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87/" class="article-nav-link">
+    <strong class="article-nav-caption">Older</strong>
+    <div class="article-nav-title">前端常用性能指标</div>
+  </a>
+  
+</nav>
+
+  
+
+  
+  
+  
+  
+
+</article>
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>Hexo &copy; 2023</li>
+      
+        <li>quhandong</li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <!-- <li>theme  <a target="_blank" rel="noopener" href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li> -->
+    </ul>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="Hexo"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">Home</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">Archives</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.douyin.com/user/MS4wLjABAAAA4EevfdHrS1s-urfPJWWJEs-_c_qLu19jtr-eYdpBNBk?enter_from=main_page&enter_method=top_bar">Gallery</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2022/07/01/README/">About</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/copybtn.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <title>
+    执行上下文、作用域、this指向 |
+    
+    Hexo
+  </title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<script src="/js/pace.min.js"></script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article id="post-执行上下文、作用域、this指向" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h1 class="article-title" itemprop="name">
+  执行上下文、作用域、this指向
+</h1>
+
+
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2022/08/06/%E6%89%A7%E8%A1%8C%E4%B8%8A%E4%B8%8B%E6%96%87%E3%80%81%E4%BD%9C%E7%94%A8%E5%9F%9F%E3%80%81this%E6%8C%87%E5%90%91/" class="article-date">
+  <time datetime="2022-08-06T09:50:43.000Z" itemprop="datePublished">2022-08-06</time>
+</a>
+      
+    </div>
+    
+
+    
+    
+<div class="tocbot"></div>
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+      
+      <p>详细了解执行上下文极为重要，因为其中涉及到了变量对象，作用域链，this等极为重要的概念，它关系到我们能不能真正理解JavaScript，下面我们分别了解几个概念。</p>
+<h3 id="执行上下文概念"><a href="#执行上下文概念" class="headerlink" title="执行上下文概念"></a>执行上下文概念</h3><p>执行上下文是指<span style="color:blue;">函数调用时</span>在<span style="color:blue;">执行栈中</span>产生的<span style="color:blue;">当前函数(或全局对象window)</span>的执行环境，该环境如隔绝外部世界的容器边界，保管可访问的变量、this对象等。</p>
+<p>“执行上下文”就是当前 JS 代码被解析和执行时所处环境的抽象概念，JS 中任何代码都是在“执行上下文”中运行的。</p>
+<p>当函数在执行的前一刻，会创建一个称为执行期上下文的内部对象，一个执行期上下文定义了一个函数执行时的环境，函数每次执行时对应的执行上下文都是独一无二的，所以多次调用一个函数会导致创建多个执行上下文，当函数执行完毕时，执行上下文就会被销毁。</p>
+<h3 id="执行上下文栈"><a href="#执行上下文栈" class="headerlink" title="执行上下文栈"></a>执行上下文栈</h3><p>全局上下文在代码开始执行时就创建，只有唯一的一个，永远在栈底，浏览器窗口关闭时出栈。</p>
+<p>函数被调用的时候创建自己的上下文环境。</p>
+<p>只有栈顶的上下文处于活动状态，执行其中的代码。</p>
+<p>ES5中外层var和函数声明，默认绑定到顶层对象上，ES6新增的const和let，在最外层声明的变量不会绑定到顶层对象</p>
+<h3 id="执行期上下文的生命周期"><a href="#执行期上下文的生命周期" class="headerlink" title="执行期上下文的生命周期"></a>执行期上下文的生命周期</h3><h4 id="1、创建阶段"><a href="#1、创建阶段" class="headerlink" title="1、创建阶段"></a>1、创建阶段</h4><p>在这个阶段中，执行上下文会分别<span style="color:blue;">创建变量对象，建立作用域链，确定this指向</span>。</p>
+<p>变量对象的创建过程</p>
+<p>(1)<strong>建立arguments对象</strong>。检查当前上下文中的参数，建立该对象下的属性与属性值。</p>
+<p>(2)<strong>检查当前上下文的函数声明</strong>，也就是使用function关键字声明的函数。在变量对象中以函数名建立一个属性，属性值为指向该函数所在内存地址的引用。如果函数名的属性已经存在，那么该属性将会被新的引用所覆盖。</p>
+<p>(3)<strong>检查当前上下文中的变量声明</strong>，每找到一个变量声明，就在变量对象中以变量名建立一个属性，属性值为undefined,如果变量名的属性已经存在，为了防止同名的函数被修改为undefined,则会直接跳过，原属性值不会被修改。</p>
+<h4 id="2、执行阶段"><a href="#2、执行阶段" class="headerlink" title="2、执行阶段"></a>2、执行阶段</h4><p>当开始执行代码的时候，会在这个阶段完成<span style="color:blue;">变量的赋值，函数的引用，以及执行其他的代码</span>。</p>
+<p>下面我们结合实际case进行分析</p>
+<p>例子1:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(foo); <span class="comment">// [Function: foo] node执行结果</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;function&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> foo=<span class="string">&#x27;foo&#x27;</span>;</span><br><span class="line"><span class="built_in">console</span>.log(foo); <span class="comment">//foo</span></span><br></pre></td></tr></table></figure>
+<p>变量对象创建过程，重名的变量定义直接跳过</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">testEC=&#123;</span><br><span class="line">  <span class="comment">//VO为Variables Object的缩写，即变量对象</span></span><br><span class="line">  <span class="attr">VO</span>:&#123;</span><br><span class="line">    <span class="attr">arguments</span>:&#123;...&#125;,</span><br><span class="line">    <span class="attr">foo</span>:<span class="number">0xa00</span>, <span class="comment">//指向foo函数的内存地址， 同名变量被跳过</span></span><br><span class="line">    <span class="attr">this</span>:Window</span><br><span class="line">  &#125;,</span><br><span class="line"> <span class="attr">scopeChain</span>:&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>执行过程中，foo被赋值为’foo’字符串</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 变量对象 -&gt; 活动对象</span></span><br><span class="line">VO-&gt;AO <span class="comment">//Active Object</span></span><br><span class="line">AO=&#123;</span><br><span class="line">  <span class="attr">arguments</span>:&#123;...&#125;,</span><br><span class="line">  <span class="attr">foo</span>:<span class="string">&#x27;foo&#x27;</span>,</span><br><span class="line">  <span class="attr">this</span>:Window</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>所以整个执行过程如下</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123; <span class="comment">// 创建过程</span></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;function&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(foo); <span class="comment">// [Function: foo] node执行结果</span></span><br><span class="line">foo=<span class="string">&#x27;foo&#x27;</span>; <span class="comment">// 执行过程被赋值</span></span><br><span class="line"><span class="built_in">console</span>.log(foo); <span class="comment">//foo</span></span><br></pre></td></tr></table></figure>
+
+<p>例子2:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(a);<span class="comment">//undefined</span></span><br><span class="line">  <span class="built_in">console</span>.log(foo());<span class="comment">//2</span></span><br><span class="line">  <span class="keyword">var</span> a=<span class="number">1</span>;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">2</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">test();</span><br></pre></td></tr></table></figure>
+<p>创建过程</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">testEC=&#123;</span><br><span class="line">  <span class="comment">//VO为Variables Object的缩写，即变量对象</span></span><br><span class="line">  <span class="attr">VO</span>:&#123;</span><br><span class="line">    <span class="attr">arguments</span>:&#123;...&#125;,</span><br><span class="line">    <span class="attr">foo</span>:<span class="number">0xa00</span>,<span class="comment">//指向foo函数的内存地址</span></span><br><span class="line">    <span class="attr">a</span>:<span class="literal">undefined</span>,</span><br><span class="line">    <span class="attr">this</span>:Window</span><br><span class="line">  &#125;,</span><br><span class="line"> <span class="attr">scopeChain</span>:&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>执行阶段：未进入执行阶段之前，变量对象中的属性都不能访问！但是进入执行阶段之后，变量对象转变为了活动对象，里面的属性都能被访问了，然后开始进行执行的操作</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// VO-&gt;AO//Active Object</span></span><br><span class="line">AO=&#123;</span><br><span class="line">  <span class="attr">arguments</span>:&#123;...&#125;,</span><br><span class="line">  <span class="attr">foo</span>:<span class="number">0xa00</span>,</span><br><span class="line">  <span class="attr">a</span>:<span class="number">1</span>,</span><br><span class="line">  <span class="attr">this</span>:Window</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因此，上面例子的执行顺序如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">2</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">var</span> a;</span><br><span class="line">  <span class="built_in">console</span>.log(a);<span class="comment">//undefined</span></span><br><span class="line">  <span class="built_in">console</span>.log(foo());<span class="comment">//2</span></span><br><span class="line">  a=<span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line">test();</span><br></pre></td></tr></table></figure>
+
+<h3 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h3><p>就是<span style="color:blue;">变量</span>和<span style="color:blue;">函数</span>可访问的范围，即作用域控制着<span style="color:blue;">变量</span>和<span style="color:blue;">函数</span>的<span style="color:blue;">可见性</span>和<span style="color:blue;">生命周期</span></p>
+<h3 id="作用域链"><a href="#作用域链" class="headerlink" title="作用域链"></a>作用域链</h3><p>需要的变量在当前作用域找不到的时候，会一层一层向上查找，直到全局作用域还没有找到的时候，就会放弃查找</p>
+<h3 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h3><p>当函数可以记住并访问所在的词法作用域时，就产生了闭包。即使函数是在当前词法作用域之外执行。</p>
+<h4 id="1、闭包形成的条件"><a href="#1、闭包形成的条件" class="headerlink" title="1、闭包形成的条件"></a>1、闭包形成的条件</h4><p>1、函数嵌套</p>
+<p>2、内部函数引用外部函数的局部变量</p>
+<h4 id="2、闭包的作用"><a href="#2、闭包的作用" class="headerlink" title="2、闭包的作用"></a>2、闭包的作用</h4><p>可以读取函数内部的变量</p>
+<p>可以使变量的值长期保存在内存中，生命周期比较长。</p>
+<p>可用来实现JS模块（JQuery库等），JS模块是具有特定功能的JS文件，将所有的数据和功能都封装在一个函数内部(私有的)，只向外暴露一个包含多个方法的对象或函数，模块的使用者，只需要通过模块暴露的对象调用方法来实现对应的功能。</p>
+<h3 id="this指向"><a href="#this指向" class="headerlink" title="this指向"></a>this指向</h3><h4 id="1、普通函数中this"><a href="#1、普通函数中this" class="headerlink" title="1、普通函数中this"></a>1、普通函数中this</h4><p>总是代表着它的直接调用者，如obj.fn，fn里的最外层this就是指向obj</p>
+<p>默认情况下，没有直接调用者，this指向window</p>
+<p>严格模式下（设置了’use strict’），this为undefined</p>
+<p>当使用call，apply，bind（ES5新增）绑定的，this指向绑定对象</p>
+<h4 id="2、ES6箭头函数指向"><a href="#2、ES6箭头函数指向" class="headerlink" title="2、ES6箭头函数指向"></a>2、ES6箭头函数指向</h4><p>更短的函数，相当于匿名函数，简化了函数的定义</p>
+<p>（1）默认指向定义它时，所处上下文的对象的this指向。即ES6箭头函数里this的指向就是上下文里对象this指向，偶尔没有上下文对象，this就指向window</p>
+<p>（2）即使是call，apply，bind等方法也不能改变箭头函数this的指向</p>
+<p><strong>实际case</strong>:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> obj = &#123;</span><br><span class="line">  <span class="attr">radius</span>: <span class="number">10</span>,  </span><br><span class="line">  <span class="function"><span class="title">diameter</span>(<span class="params"></span>)</span> &#123;    </span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">this</span>.radius * <span class="number">2</span></span><br><span class="line">  &#125;,  </span><br><span class="line">  <span class="attr">perimeter</span>: <span class="function">() =&gt;</span> <span class="number">2</span> * <span class="built_in">Math</span>.PI * <span class="built_in">this</span>.radius <span class="comment">// 所处的上下文环境是全局上下文， Window对象上没有radius变量</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(obj.diameter())    <span class="comment">// 20</span></span><br><span class="line"><span class="built_in">console</span>.log(obj.perimeter())    <span class="comment">// NaN</span></span><br></pre></td></tr></table></figure>
+
+<p>参考文档</p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7194742747427766309">JS执行上下文</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904068888920071">作用域</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7043740640420560910">this指向</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2022/08/06/%E6%89%A7%E8%A1%8C%E4%B8%8A%E4%B8%8B%E6%96%87%E3%80%81%E4%BD%9C%E7%94%A8%E5%9F%9F%E3%80%81this%E6%8C%87%E5%90%91/" data-id="clpuo0yvi000gotmu6x9n0s58" class="article-share-link">
+        Share
+      </a>
+      
+    </footer>
+
+  </div>
+
+  
+  
+<nav class="article-nav">
+  
+  <a href="/2023/12/07/Mac%E4%B8%8B%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AASSHKey/" class="article-nav-link">
+    <strong class="article-nav-caption">Newer</strong>
+    <div class="article-nav-title">
+      
+      Mac下配置多个SSHKey
+      
+    </div>
+  </a>
+  
+  
+  <a href="/2022/07/01/README/" class="article-nav-link">
+    <strong class="article-nav-caption">Older</strong>
+    <div class="article-nav-title">个人介绍</div>
+  </a>
+  
+</nav>
+
+  
+
+  
+  
+  
+  
+
+</article>
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>Hexo &copy; 2023</li>
+      
+        <li>quhandong</li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <!-- <li>theme  <a target="_blank" rel="noopener" href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li> -->
+    </ul>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="Hexo"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">Home</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">Archives</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.douyin.com/user/MS4wLjABAAAA4EevfdHrS1s-urfPJWWJEs-_c_qLu19jtr-eYdpBNBk?enter_from=main_page&enter_method=top_bar">Gallery</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2022/07/01/README/">About</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/copybtn.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+
+</html>

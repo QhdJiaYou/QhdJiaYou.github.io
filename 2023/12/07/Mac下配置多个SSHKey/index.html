@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <title>
+    Mac下配置多个SSHKey |
+    
+    Hexo
+  </title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<script src="/js/pace.min.js"></script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article id="post-Mac下配置多个SSHKey" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h1 class="article-title" itemprop="name">
+  Mac下配置多个SSHKey
+</h1>
+
+
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2023/12/07/Mac%E4%B8%8B%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AASSHKey/" class="article-date">
+  <time datetime="2023-12-07T03:25:09.000Z" itemprop="datePublished">2023-12-07</time>
+</a>
+      
+    </div>
+    
+
+    
+    
+<div class="tocbot"></div>
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+      
+      <p>大家在工作中可能会遇到需要在一台电脑上配置不同的 SSH Key 的情况，例如我们需要同时使用个人 Github 以及公司的 Gitlab 情况，这时我们就需要配置不同的 SSH Key 了。具体操作步骤如下:</p>
+<h4 id="打开终端，切换到系统的-SSH-目录下"><a href="#打开终端，切换到系统的-SSH-目录下" class="headerlink" title="打开终端，切换到系统的 SSH 目录下"></a>打开终端，切换到系统的 SSH 目录下</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/.ssh</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看当前的-SSH-Key"><a href="#查看当前的-SSH-Key" class="headerlink" title="查看当前的 SSH Key"></a>查看当前的 SSH Key</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls -al</span><br></pre></td></tr></table></figure>
+
+<h4 id="移除所有的公钥"><a href="#移除所有的公钥" class="headerlink" title="移除所有的公钥"></a>移除所有的公钥</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm id_rsa*</span><br></pre></td></tr></table></figure>
+
+<h4 id="生成自己Github的SSH-Key"><a href="#生成自己Github的SSH-Key" class="headerlink" title="生成自己Github的SSH Key"></a>生成自己Github的SSH Key</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C <span class="string">&quot;自己的Github账号&quot;</span> -f github_rsa</span><br></pre></td></tr></table></figure>
+
+<h4 id="生成公司Github的SSH-Key"><a href="#生成公司Github的SSH-Key" class="headerlink" title="生成公司Github的SSH Key"></a>生成公司Github的SSH Key</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C <span class="string">&quot;公司的Github账号&quot;</span> -f company_rsa</span><br></pre></td></tr></table></figure>
+
+<h4 id="获取SSH公钥粘贴到对应平台的SSH设置中"><a href="#获取SSH公钥粘贴到对应平台的SSH设置中" class="headerlink" title="获取SSH公钥粘贴到对应平台的SSH设置中"></a>获取SSH公钥粘贴到对应平台的SSH设置中</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cat ~/.ssh/company_rsa.pub</span><br><span class="line">cat ~/.ssh/github_rsa.pub</span><br></pre></td></tr></table></figure>
+
+<h4 id="添加配置文件-config"><a href="#添加配置文件-config" class="headerlink" title="添加配置文件 config"></a>添加配置文件 config</h4><p>如果有则直接编辑，没有则创建，路径 ~/.ssh/config，配置写法如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># github</span></span><br><span class="line">Host github.com</span><br><span class="line">HostName github.com</span><br><span class="line">PreferredAuthentications publickey</span><br><span class="line">IdentityFile ~/.ssh/github_rsa</span><br><span class="line"></span><br><span class="line"><span class="comment"># gitlab</span></span><br><span class="line">Host gitlab.com</span><br><span class="line">HostName gitlab.com</span><br><span class="line">PreferredAuthentications publickey</span><br><span class="line">IdentityFile ~/.ssh/company_rsa</span><br></pre></td></tr></table></figure>
+
+<p>Host 名称可以随便设置，HostName 就是网站的地址</p>
+<h4 id="测试下是否添加成功"><a href="#测试下是否添加成功" class="headerlink" title="测试下是否添加成功"></a>测试下是否添加成功</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 测试 GitHub</span></span><br><span class="line"></span><br><span class="line">ssh -T git@github.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试 GitLab</span></span><br><span class="line"></span><br><span class="line">ssh -T git@gitlab.com</span><br></pre></td></tr></table></figure>
+
+<h4 id="不同项目切换不同的SSH"><a href="#不同项目切换不同的SSH" class="headerlink" title="不同项目切换不同的SSH"></a>不同项目切换不同的SSH</h4><p>为了方便同时使用多个账号，我们可以通过文件路径进行区分<br>首先为自己的github账号创建.gitconfig-my配置文件，内容如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[user]</span><br><span class="line">    name = 自己的Github账号</span><br><span class="line">    email = 自己的Github邮箱</span><br></pre></td></tr></table></figure>
+
+<p>修改全局git config文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.gitconfig</span><br></pre></td></tr></table></figure>
+
+<p>添加如下配置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[user]</span><br><span class="line">    name = 公司账号</span><br><span class="line">    email = 公司邮箱</span><br><span class="line">[includeIf <span class="string">&quot;gitdir:~/MYGITHUB/&quot;</span>]</span><br><span class="line">    path = .gitconfig-my</span><br></pre></td></tr></table></figure>
+
+<p>这样指定目录～/MYGITHUB/下的文件就会使用自己的github账号和邮箱，而其他目录仍然使用全局配置公司的邮箱和账号</p>
+<p>以上就是在Mac下配置多个SSHKey的具体步骤，希望对你有所帮助。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2023/12/07/Mac%E4%B8%8B%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AASSHKey/" data-id="clpuo0yv80004otmu3pq550jm" class="article-share-link">
+        Share
+      </a>
+      
+    </footer>
+
+  </div>
+
+  
+  
+<nav class="article-nav">
+  
+  
+  <a href="/2022/08/06/%E6%89%A7%E8%A1%8C%E4%B8%8A%E4%B8%8B%E6%96%87%E3%80%81%E4%BD%9C%E7%94%A8%E5%9F%9F%E3%80%81this%E6%8C%87%E5%90%91/" class="article-nav-link">
+    <strong class="article-nav-caption">Older</strong>
+    <div class="article-nav-title">执行上下文、作用域、this指向</div>
+  </a>
+  
+</nav>
+
+  
+
+  
+  
+  
+  
+
+</article>
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>Hexo &copy; 2023</li>
+      
+        <li>quhandong</li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <!-- <li>theme  <a target="_blank" rel="noopener" href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li> -->
+    </ul>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="Hexo"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">Home</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">Archives</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.douyin.com/user/MS4wLjABAAAA4EevfdHrS1s-urfPJWWJEs-_c_qLu19jtr-eYdpBNBk?enter_from=main_page&enter_method=top_bar">Gallery</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2022/07/01/README/">About</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/copybtn.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+
+</html>

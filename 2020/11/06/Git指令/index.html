@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <title>
+    git指令 |
+    
+    Hexo
+  </title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<script src="/js/pace.min.js"></script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article id="post-Git指令" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h1 class="article-title" itemprop="name">
+  git指令
+</h1>
+
+
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/11/06/Git%E6%8C%87%E4%BB%A4/" class="article-date">
+  <time datetime="2020-11-06T09:50:43.000Z" itemprop="datePublished">2020-11-06</time>
+</a>
+      
+    </div>
+    
+
+    
+    
+<div class="tocbot"></div>
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+      
+      <h2 id="一、git配置相关操作"><a href="#一、git配置相关操作" class="headerlink" title="一、git配置相关操作"></a>一、git配置相关操作</h2><h3 id="查看本地git用户信息"><a href="#查看本地git用户信息" class="headerlink" title="查看本地git用户信息"></a>查看本地git用户信息</h3><p>git config user.name</p>
+<p>git config user.email</p>
+<h3 id="配置本地git用户信息"><a href="#配置本地git用户信息" class="headerlink" title="配置本地git用户信息"></a>配置本地git用户信息</h3><p>git config –global user.name “username”</p>
+<p>git config –global user.email “email”</p>
+<p>生成密钥对：<code>ssh-keygen -t rsa -C &quot;邮箱&quot;</code></p>
+<p>复制公钥内容： <code>clip &lt; ~/.ssh/id_rsa.pub</code></p>
+<p>【备注】<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/b6bd61e1bc5f">多账户配置流程</a>，主要是为多个邮箱账号生成ssh密钥对</p>
+<h3 id="查看不同级别的git-config"><a href="#查看不同级别的git-config" class="headerlink" title="查看不同级别的git config"></a>查看不同级别的git config</h3><table>
+<thead>
+<tr>
+<th align="center">级别</th>
+<th>文件存储位置</th>
+<th>查看命令</th>
+<th>优先级</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">系统级别</td>
+<td>/etc/gitconfig</td>
+<td>git config –system –list</td>
+<td>最低</td>
+</tr>
+<tr>
+<td align="center">用户级别</td>
+<td>~/.gitconfig</td>
+<td>git config –global –list</td>
+<td>中</td>
+</tr>
+<tr>
+<td align="center">项目级别</td>
+<td>.git/config</td>
+<td>git config –local –list</td>
+<td>最高</td>
+</tr>
+</tbody></table>
+<p><strong>【备注】所以当我们想单独配置某个项目的user.name user.email 以及远程仓库地址, 都可以通过修改项目的.git/config文件实现，可以实现一台电脑同时使用多个github账号</strong></p>
+<h2 id="二、远端拷贝"><a href="#二、远端拷贝" class="headerlink" title="二、远端拷贝"></a>二、远端拷贝</h2><h3 id="拉取git仓库"><a href="#拉取git仓库" class="headerlink" title="拉取git仓库"></a>拉取git仓库</h3><h4 id="git-fetch-origin-master-tmp"><a href="#git-fetch-origin-master-tmp" class="headerlink" title="git fetch origin master:tmp"></a><code>git fetch origin master:tmp</code></h4><p>在本地新建一个tmp分支，并将远程origin仓库的master分支代码下载到本地tmp分支</p>
+<h4 id="git-clone-b-分支名-远程库地址-本地目录名"><a href="#git-clone-b-分支名-远程库地址-本地目录名" class="headerlink" title="git clone [-b 分支名] 远程库地址 本地目录名"></a><code>git clone [-b 分支名] 远程库地址 本地目录名</code></h4><p>将远程仓库拷贝到本地指定目录，并新建分支</p>
+<h4 id="git-pull-仓库别名-仓库分支名称"><a href="#git-pull-仓库别名-仓库分支名称" class="headerlink" title="git pull 仓库别名 仓库分支名称"></a><code>git pull 仓库别名 仓库分支名称</code></h4><p>拉取远端更新内容</p>
+<h3 id="将已有项目添加到远程git仓库"><a href="#将已有项目添加到远程git仓库" class="headerlink" title="将已有项目添加到远程git仓库"></a>将已有项目添加到远程git仓库</h3><h4 id="git-remote-add-origin-远程仓库地址"><a href="#git-remote-add-origin-远程仓库地址" class="headerlink" title="git remote add origin 远程仓库地址"></a><code>git remote add origin 远程仓库地址</code></h4><p>给本地项目添加远程仓库地址</p>
+<h4 id="git-remote-v"><a href="#git-remote-v" class="headerlink" title="git remote -v"></a><code>git remote -v</code></h4><p>查看远程仓库</p>
+<h4 id="git-push-仓库别名-仓库分支名称"><a href="#git-push-仓库别名-仓库分支名称" class="headerlink" title="git push 仓库别名 仓库分支名称"></a><code>git push 仓库别名 仓库分支名称</code></h4><p>将本地更新推送到远端</p>
+<h4 id="git-pull-origin-master-–allow-unrelated-histories"><a href="#git-pull-origin-master-–allow-unrelated-histories" class="headerlink" title="git pull origin master –allow-unrelated-histories"></a><code>git pull origin master –allow-unrelated-histories</code></h4><p><font color=Blue><strong>【备注】远程仓库和本地仓库分别创建的时候直接pull会出现错误，refusing to merge unrelated histories，这个时候就要使用–allow-unrelated-histories参数来解决(可以合并两个独立启动仓库的历史)</strong></font></p>
+<h2 id="三、本地的工作区和版本库"><a href="#三、本地的工作区和版本库" class="headerlink" title="三、本地的工作区和版本库"></a>三、本地的工作区和版本库</h2><h3 id="版本库包括暂存区和本地分支"><a href="#版本库包括暂存区和本地分支" class="headerlink" title="版本库包括暂存区和本地分支"></a>版本库包括暂存区和本地分支</h3><p><img src="https://github.com/QhdJiaYou/Image/blob/master/gitOverview.png?raw=true" alt="avatar"></p>
+<p>git add把文件添加进去，实际上就是把<strong>文件修改</strong>添加到<strong>暂存区</strong>；</p>
+<p>git commit提交更改，实际上就是把<strong>暂存区</strong>的所有内容提交到<strong>当前分支</strong>。</p>
+<h3 id="恢复暂存区的指定文件到工作区"><a href="#恢复暂存区的指定文件到工作区" class="headerlink" title="恢复暂存区的指定文件到工作区"></a>恢复暂存区的指定文件到工作区</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git checkout [fileName]</span><br><span class="line">git checkout -- [fileName] // -- 表示后面的内容是文件，是为了避免指令和文件名相同时的冲突，例如rm -f 和rm -- -f，后面的指令是删除名为-f的文件</span><br><span class="line">git checkout . //恢复暂存区的所有文件到工作区</span><br></pre></td></tr></table></figure>
+<h3 id="删除本地分支"><a href="#删除本地分支" class="headerlink" title="删除本地分支"></a>删除本地分支</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -D branchName  或 git branch -d branchName  // D是强制删除</span><br></pre></td></tr></table></figure>
+<h3 id="比较差异Diff"><a href="#比较差异Diff" class="headerlink" title="比较差异Diff"></a>比较差异Diff</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git diff [filePath] // 比较working和stage</span><br><span class="line">git diff HEAD // 显示working与commit的差异</span><br><span class="line">git diff --cached：是查看stage与commit的差别的</span><br><span class="line">git diff HEAD^ // 是比较working与上次commit</span><br><span class="line">git diff HEAD~n</span><br></pre></td></tr></table></figure>
+<h3 id="git新增——git-switch和git-restore"><a href="#git新增——git-switch和git-restore" class="headerlink" title="git新增——git switch和git restore"></a>git新增——git switch和git restore</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b [branchName] 等同于 git switch -c [branchName]</span><br><span class="line">git restore -- [fileName] 等同于 git checkout -- [fileName]</span><br></pre></td></tr></table></figure>
+<h3 id="重置代码"><a href="#重置代码" class="headerlink" title="重置代码"></a>重置代码</h3><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903614767448072">git reset和git revert操作的区别</a></p>
+<p>实现手段不同，git reset是通过操作修改当前commit指针指向，操作后，某次commit之后的所有commit都会被去掉</p>
+<p>而git revert是通过新增一次commit来抵消之前某次commit的修改，原本的修改仍然还在，可以达到只去除某一次commit的效果</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git reset --hard // 修改指针123</span><br><span class="line">git reset --mixed  // 修改指针12，默认值</span><br><span class="line">git reset --soft //修改指针1</span><br><span class="line"></span><br><span class="line">//例子</span><br><span class="line">git reset --hard HEAD^  // 所有地方都修改成上一次commit</span><br></pre></td></tr></table></figure>
+<p><img src="https://github.com/QhdJiaYou/Image/blob/master/gitResetWay.png?raw=true" alt="avatar"></p>
+<h2 id="四、git实战经验"><a href="#四、git实战经验" class="headerlink" title="四、git实战经验"></a>四、git实战经验</h2><h3 id="git-pull-–rebase"><a href="#git-pull-–rebase" class="headerlink" title="git pull –rebase"></a>git pull –rebase</h3><p>使用场景: 拉取远端代码, 又不想产生新的merge commit记录</p>
+<p>使用时两个注意点:</p>
+<ul>
+<li>执行 git pull –rebase 的时候必须保持本地目录干净。即：不能存在状态为 modified 的文件。（存在Untracked files是没关系的）</li>
+<li>如果出现冲突，可以选择手动解决冲突后继续 rebase，也可以放弃本次 rebase</li>
+</ul>
+<p>解决本地文件修改</p>
+<ul>
+<li>如果本次修改已经完成，则可以先提交（commit）一下</li>
+<li>如果本次修改尚未完成，则可以先贮藏：git stash</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 把本地发生改动的文件贮藏一下</span></span><br><span class="line">git stash </span><br><span class="line"><span class="meta">#</span><span class="bash"> 把远程最新的 commit 以变基的方式同步到本地</span></span><br><span class="line">git pull --rebase</span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果存在冲突,一般是多人改了同一个地方, 手动修改冲突文件后执行</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git add 冲突文件</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git rebase --<span class="built_in">continue</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 也可以执行git rebase --abort终止合并操作继续执行</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 把本地的 commit 推送到远程</span></span><br><span class="line">git push </span><br><span class="line"><span class="meta">#</span><span class="bash"> 把本地贮藏的文件弹出，继续修改</span></span><br><span class="line">git stash pop</span><br></pre></td></tr></table></figure>
+
+<p><strong>【备注】使用rebase出现冲突,有一种情况是要避免的</strong></p>
+<p>如果你本地N次commit都修改了同一个地方,且与远端被另外一个同学修改的地方有冲突</p>
+<p>那么这个时候就需要手动解冲突N次</p>
+<p>解决办法是, 直接使用git pull(git fetch + git merge)</p>
+<p>或者本地先将多次commit合并, 再使用git pull –rebase</p>
+<h3 id="打tag"><a href="#打tag" class="headerlink" title="打tag"></a>打tag</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git tag r-201013-8a2ceb-quhandong</span><br><span class="line">git push origin r-201013-8a2ceb-quhandong</span><br></pre></td></tr></table></figure>
+
+<h3 id="常用命令行指令"><a href="#常用命令行指令" class="headerlink" title="常用命令行指令"></a>常用命令行指令</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ctrl + w 往回删除一个单词，光标放在最末尾</span><br><span class="line">ctrl + u 删除光标以前的字符</span><br><span class="line">ctrl + k 删除光标以后的字符</span><br><span class="line">ctrl + a 移动光标至的字符头</span><br><span class="line">ctrl + e 移动光标至的字符尾</span><br><span class="line">ctrl + l 清屏</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/11/06/Git%E6%8C%87%E4%BB%A4/" data-id="clpuo0yv70002otmucdr9a8ec" class="article-share-link">
+        Share
+      </a>
+      
+    </footer>
+
+  </div>
+
+  
+  
+<nav class="article-nav">
+  
+  <a href="/2020/11/26/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" class="article-nav-link">
+    <strong class="article-nav-caption">Newer</strong>
+    <div class="article-nav-title">
+      
+      计算机网络基础
+      
+    </div>
+  </a>
+  
+  
+  <a href="/2020/11/06/hash&chunkhash&contenthash%E5%8C%BA%E5%88%AB/" class="article-nav-link">
+    <strong class="article-nav-caption">Older</strong>
+    <div class="article-nav-title">webpack之hash、chunkhash、contenthash区别</div>
+  </a>
+  
+</nav>
+
+  
+
+  
+  
+  
+  
+
+</article>
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>Hexo &copy; 2023</li>
+      
+        <li>quhandong</li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <!-- <li>theme  <a target="_blank" rel="noopener" href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li> -->
+    </ul>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="Hexo"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">Home</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">Archives</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.douyin.com/user/MS4wLjABAAAA4EevfdHrS1s-urfPJWWJEs-_c_qLu19jtr-eYdpBNBk?enter_from=main_page&enter_method=top_bar">Gallery</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2022/07/01/README/">About</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/copybtn.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+
+</html>

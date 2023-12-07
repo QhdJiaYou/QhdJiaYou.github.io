@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <title>
+    webpack自定义plugin&amp;loader |
+    
+    Hexo
+  </title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<script src="/js/pace.min.js"></script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article id="post-自定义plugin&amp;loader" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h1 class="article-title" itemprop="name">
+  webpack自定义plugin&amp;loader
+</h1>
+
+
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2022/03/28/%E8%87%AA%E5%AE%9A%E4%B9%89plugin&loader/" class="article-date">
+  <time datetime="2022-03-28T09:50:43.000Z" itemprop="datePublished">2022-03-28</time>
+</a>
+      
+    </div>
+    
+
+    
+    
+<div class="tocbot"></div>
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+      
+      <h2 id="插件基本结构"><a href="#插件基本结构" class="headerlink" title="插件基本结构"></a>插件基本结构</h2><p>定义：插件是由「具有 apply 方法的 prototype 对象」所实例化出来的</p>
+<p>这个 apply 方法在安装插件时，会被 webpack compiler 调用一次。apply 方法可以接收一个 webpack compiler 对象的引用，从而可以在回调函数中访问到 compiler 对象。<br>s<br><strong>基本组成</strong></p>
+<ul>
+<li>拥有 apply 方法的对象</li>
+<li>指定一个绑定到 webpack 自身的事件钩子(比如emit：生成资源到 output 目录之前， afterEmit： 生成资源到 output 目录之后)</li>
+<li>处理 webpack 内部实例的特定数据(Compilation)</li>
+<li>功能完成后调用 webpack 提供的回调(callback)</li>
+</ul>
+<p>示例：在打包内容中新增一个文件，文件内容自定义</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HelloPlugin</span> </span>&#123;</span><br><span class="line">  	<span class="comment">// 通过options获取参数</span></span><br><span class="line">    <span class="function"><span class="title">constructor</span>(<span class="params">options = &#123;&#125;</span>)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.name = options.name;</span><br><span class="line">    &#125;</span><br><span class="line">  	<span class="comment">// 定义apply方法</span></span><br><span class="line">    <span class="function"><span class="title">apply</span>(<span class="params">compiler</span>)</span> &#123;</span><br><span class="line">      <span class="comment">// 在外层先拿到this引用，否则在匿名函数中this指向不是当前实例</span></span><br><span class="line">        <span class="keyword">const</span> self = <span class="built_in">this</span>;</span><br><span class="line">        compiler.plugin(<span class="string">&#x27;emit&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">compilation, callback</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> filelist = <span class="string">`In this build <span class="subst">$&#123;self.name&#125;</span>:\n\n`</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 将这个列表作为一个新的文件资源，插入到 webpack 构建中：</span></span><br><span class="line">            compilation.assets[<span class="string">&#x27;filelist.md&#x27;</span>] = &#123;</span><br><span class="line">                <span class="attr">source</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">                    <span class="keyword">return</span> filelist;</span><br><span class="line">                &#125;,</span><br><span class="line">                <span class="attr">size</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">                    <span class="keyword">return</span> filelist.length;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;;</span><br><span class="line">            <span class="keyword">if</span> (callback &amp;&amp; <span class="keyword">typeof</span> callback === <span class="string">&#x27;function&#x27;</span>) &#123;</span><br><span class="line">                callback();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = HelloPlugin;</span><br></pre></td></tr></table></figure>
+
+<p>使用的时候</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">plugins: [</span><br><span class="line">        new HtmlWebpackPlugin(&#123;</span><br><span class="line">            template: &#x27;./src/index.html&#x27;,</span><br><span class="line">            title: &#x27;MyDemo&#x27;,</span><br><span class="line">        &#125;),</span><br><span class="line">        new MiniCssExtractPlugin(&#123;</span><br><span class="line">            filename: &#x27;css/[name].[contenthash].css&#x27;,</span><br><span class="line">        &#125;),</span><br><span class="line">        new HelloPlugin(&#123; name: &#x27;quhandong&#x27; &#125;),</span><br><span class="line">    ],</span><br></pre></td></tr></table></figure>
+
+<h2 id="常用插件介绍"><a href="#常用插件介绍" class="headerlink" title="常用插件介绍"></a>常用插件介绍</h2><p><strong>HtmlWebpackPlugin</strong>：生成全新的html文件，能够将所有bundle自动引入，不需要手动编写。这对于那些文件名中包含哈希值，并且哈希值会随着每次编译而改变的 webpack 包特别有用。<br><strong>MiniCssExtractPlugin</strong>：会将 CSS 提取到单独的文件中，为每个包含 CSS 的 JS 文件创建一个 CSS 文件，并且支持 CSS 和 SourceMaps 的按需加载。</p>
+<h2 id="loader基本结构"><a href="#loader基本结构" class="headerlink" title="loader基本结构"></a>loader基本结构</h2><p>当一个 loader 在资源中使用，这个 loader 只能传入一个参数(source) - 这个参数是一个包含包含资源文件内容的字符串</p>
+<p>同步 loader 可以简单的返回一个代表模块转化后的值。在更复杂的情况下，loader 也可以通过使用 this.callback(err, values…) 函数，返回任意数量的值。错误要么传递给这个 this.callback 函数，要么扔进同步 loader 中。</p>
+<p>loader 会返回一个或者两个值。第一个值的类型是 JavaScript 代码的字符串或者 buffer。第二个参数值是 SourceMap，它是个 JavaScript 对象。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> loaderUtils = <span class="built_in">require</span>(<span class="string">&#x27;loader-utils&#x27;</span>);</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">convertUnit</span>(<span class="params">source</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> options = loaderUtils.getOptions(<span class="built_in">this</span>);</span><br><span class="line">   <span class="comment">// 统一处理source中正则匹配内容。。。。</span></span><br><span class="line">    <span class="keyword">return</span> source;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="自定义loader"><a href="#自定义loader" class="headerlink" title="自定义loader"></a>自定义loader</h2><p>定义一个处理tsx中样式单位的loader</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * tsx文件内联样式转换，px2rem &amp; px2vw</span></span><br><span class="line"><span class="comment"> * &#123;</span></span><br><span class="line"><span class="comment"> * UIWidth: 设计稿宽度，px2vw时必填</span></span><br><span class="line"><span class="comment"> * minPixelValue: 不进行转换的最小像素值，默认值为1px</span></span><br><span class="line"><span class="comment"> * unitPrecision: 转换值精度, 默认值4</span></span><br><span class="line"><span class="comment"> * targetUnit: 目标单位，不提供则不转换</span></span><br><span class="line"><span class="comment"> * remUnit: 1rem值大小，px2rem时必填</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> * 特殊说明： fontSize: &#x27;80px no&quot;，可在像素值后加no，表示该值不转换</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> loaderUtils = <span class="built_in">require</span>(<span class="string">&#x27;loader-utils&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> pxRegex = <span class="regexp">/(?&lt;=&#x27;|&quot;)(\d*\.*\d*)(px)(\s*no)?(?=&#x27;|&quot;)/gm</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">px2vw</span>(<span class="params">px, UIWidth</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> px / UIWidth * <span class="number">100</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">px2rem</span>(<span class="params">px, rem</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> px / rem;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createPxReplace</span>(<span class="params">UIWidth, minPixelValue, unitPrecision, targetUnit, rem</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">m, $<span class="number">1</span>, $<span class="number">2</span>, $<span class="number">3</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ($<span class="number">3</span>) &#123;</span><br><span class="line">            <span class="comment">// eslint-disable-next-line @typescript-eslint/restrict-plus-operands</span></span><br><span class="line">            <span class="keyword">return</span> $<span class="number">1</span> + $<span class="number">2</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">const</span> pixels = <span class="built_in">parseFloat</span>($<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">if</span> (pixels &lt;= minPixelValue) <span class="keyword">return</span> m;</span><br><span class="line">        <span class="keyword">if</span> (targetUnit === <span class="string">&#x27;vw&#x27;</span>) <span class="keyword">return</span> <span class="string">`<span class="subst">$&#123;px2vw(pixels, UIWidth).toFixed(unitPrecision)&#125;</span>vw`</span>;</span><br><span class="line">        <span class="keyword">if</span> (targetUnit === <span class="string">&#x27;rem&#x27;</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">`<span class="subst">$&#123;px2rem(pixels, rem).toFixed(unitPrecision)&#125;</span>rem`</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> m;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">convertUnit</span>(<span class="params">source</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> options = loaderUtils.getOptions(<span class="built_in">this</span>);</span><br><span class="line">    <span class="keyword">const</span> opts = <span class="built_in">Object</span>.assign(&#123;</span><br><span class="line">        <span class="attr">UIWidth</span>: <span class="number">750</span>,</span><br><span class="line">        <span class="attr">minPixelValue</span>: <span class="number">1</span>,</span><br><span class="line">        <span class="attr">unitPrecision</span>: <span class="number">4</span>,</span><br><span class="line">        <span class="attr">remUnit</span>: <span class="number">75</span>,</span><br><span class="line">        <span class="attr">targetUnit</span>: <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">    &#125;, options);</span><br><span class="line">    <span class="keyword">const</span> pxReplace = createPxReplace(opts.UIWidth, opts.minPixelValue, opts.unitPrecision, opts.targetUnit, opts.remUnit);</span><br><span class="line">    source = source.replace(pxRegex, pxReplace);</span><br><span class="line">    <span class="keyword">return</span> source;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = convertUnit;</span><br></pre></td></tr></table></figure>
+
+<p>使用</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>: &#123;</span><br><span class="line">   <span class="attr">rules</span>: [</span><br><span class="line">       &#123;</span><br><span class="line">           <span class="attr">test</span>: <span class="regexp">/\.tsx?$/</span>,</span><br><span class="line">           use: [</span><br><span class="line">               &#123;</span><br><span class="line">                   <span class="attr">loader</span>: <span class="string">&#x27;ts-loader&#x27;</span>,</span><br><span class="line">                   <span class="attr">options</span>: &#123;</span><br><span class="line">                       <span class="attr">transpileOnly</span>: <span class="literal">true</span>,</span><br><span class="line">                       <span class="attr">configFile</span>: path.resolve(__dirname, <span class="string">&#x27;tsconfig.json&#x27;</span>),</span><br><span class="line">                   &#125;,</span><br><span class="line">               &#125;,</span><br><span class="line">               &#123;</span><br><span class="line">                   <span class="attr">loader</span>: path.resolve(__dirname, <span class="string">&#x27;unit-convert-loader.js&#x27;</span>),</span><br><span class="line">                   <span class="attr">options</span>: &#123;</span><br><span class="line">                       <span class="attr">UIWidth</span>: <span class="number">750</span>,</span><br><span class="line">                       <span class="attr">unitPrecision</span>: <span class="number">4</span>,</span><br><span class="line">                       <span class="attr">targetUnit</span>: pxUnit === <span class="string">&#x27;px2vw&#x27;</span> ? <span class="string">&#x27;vw&#x27;</span> : <span class="string">&#x27;rem&#x27;</span>,</span><br><span class="line">                       <span class="attr">minPixelValue</span>: <span class="number">1</span>,</span><br><span class="line">                       <span class="attr">remUnit</span>: <span class="number">75</span>,</span><br><span class="line">                   &#125;,</span><br><span class="line"></span><br><span class="line">               &#125;,</span><br><span class="line">           ],</span><br><span class="line">       &#125;,</span><br><span class="line">     ]</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p>插件：<a target="_blank" rel="noopener" href="https://www.webpackjs.com/contribute/writing-a-plugin/">https://www.webpackjs.com/contribute/writing-a-plugin/</a><br>loader: <a target="_blank" rel="noopener" href="https://www.webpackjs.com/contribute/writing-a-loader/">https://www.webpackjs.com/contribute/writing-a-loader/</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2022/03/28/%E8%87%AA%E5%AE%9A%E4%B9%89plugin&loader/" data-id="clpuo0yvk000jotmud3fj8kl1" class="article-share-link">
+        Share
+      </a>
+      
+    </footer>
+
+  </div>
+
+  
+  
+<nav class="article-nav">
+  
+  <a href="/2022/06/06/flutter%E5%AE%9E%E7%8E%B0%E8%B7%9F%E9%9A%8F%E6%95%88%E6%9E%9C/" class="article-nav-link">
+    <strong class="article-nav-caption">Newer</strong>
+    <div class="article-nav-title">
+      
+      flutter跟随
+      
+    </div>
+  </a>
+  
+  
+  <a href="/2021/12/07/Dart%E5%87%BD%E6%95%B0/" class="article-nav-link">
+    <strong class="article-nav-caption">Older</strong>
+    <div class="article-nav-title">Dart函数</div>
+  </a>
+  
+</nav>
+
+  
+
+  
+  
+  
+  
+
+</article>
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>Hexo &copy; 2023</li>
+      
+        <li>quhandong</li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <!-- <li>theme  <a target="_blank" rel="noopener" href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li> -->
+    </ul>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="Hexo"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">Home</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">Archives</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.douyin.com/user/MS4wLjABAAAA4EevfdHrS1s-urfPJWWJEs-_c_qLu19jtr-eYdpBNBk?enter_from=main_page&enter_method=top_bar">Gallery</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2022/07/01/README/">About</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/copybtn.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+
+</html>

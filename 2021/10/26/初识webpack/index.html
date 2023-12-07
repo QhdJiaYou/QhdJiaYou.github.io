@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <title>
+    了解webpack |
+    
+    Hexo
+  </title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<script src="/js/pace.min.js"></script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article id="post-初识webpack" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h1 class="article-title" itemprop="name">
+  了解webpack
+</h1>
+
+
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2021/10/26/%E5%88%9D%E8%AF%86webpack/" class="article-date">
+  <time datetime="2021-10-26T09:50:43.000Z" itemprop="datePublished">2021-10-26</time>
+</a>
+      
+    </div>
+    
+
+    
+    
+<div class="tocbot"></div>
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+      
+      <h2 id="核心功能概述"><a href="#核心功能概述" class="headerlink" title="核心功能概述"></a>核心功能概述</h2><ol>
+<li>资源管理：webpack 最出色的功能之一就是，除了引入 JavaScript，还可以通过 loader 或内置的 Asset Modules 引入任何其他类型的文件</li>
+<li>提供强大的source map能力，<code>devtool: &#39;inline-source-map&#39;</code></li>
+<li>代码变化后自动编译的能力<ul>
+<li>webpack’s Watch Mode</li>
+<li>webpack-dev-server （还可以刷新浏览器， 实时重新加载）</li>
+<li>webpack-dev-middleware（它可以把 webpack 处理过的文件发送到一个 server，可以自定义服务器）</li>
+</ul>
+</li>
+<li>代码分离；把代码分离到不同的 bundle 中，然后可以按需加载或并行加载这些文件。代码分离可以用于获取更小的 bundle，以及控制资源加载优先级，如果使用合理，会极大影响加载时间<ul>
+<li>入口起点：使用 entry 配置手动地分离代码。</li>
+<li>防止重复：使用 Entry dependencies 或者 SplitChunksPlugin 去重和分离 chunk。</li>
+<li>动态导入：通过模块的内联函数调用来分离代码。</li>
+</ul>
+</li>
+<li>缓存能力：通过必要的配置，以确保 webpack 编译生成的文件能够被客户端缓存，而在文件内容变化后，能够请求到新的文件。理想情况下的代码分离，最后分三类输出<ul>
+<li>main.[contenthash].js 入口逻辑</li>
+<li>runtime.[contenthash].js 运行时代码</li>
+<li>vendors.[contenthash].js node_modules里的逻辑<br>vendors中的逻辑不会经常改变，因此可以利用缓存机制，减少向server请求资源。</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    <span class="attr">entry</span>: <span class="string">&#x27;./src/index.js&#x27;</span>,</span><br><span class="line">    <span class="comment">// 提供source map</span></span><br><span class="line">    <span class="attr">devtool</span>: <span class="string">&#x27;inline-source-map&#x27;</span>,</span><br><span class="line">    <span class="comment">// 提供本地实时更新server</span></span><br><span class="line">    <span class="attr">devServer</span>: &#123;</span><br><span class="line">        <span class="attr">contentBase</span>: <span class="string">&#x27;./dist&#x27;</span>,</span><br><span class="line">        <span class="attr">historyApiFallback</span>: <span class="literal">true</span>,</span><br><span class="line">        <span class="attr">inline</span>: <span class="literal">true</span>,</span><br><span class="line">        <span class="attr">port</span>: <span class="number">3000</span>,</span><br><span class="line">        <span class="attr">host</span>: <span class="string">&#x27;localhost&#x27;</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">plugins</span>: [</span><br><span class="line">      <span class="keyword">new</span> HtmlWebpackPlugin(&#123;</span><br><span class="line">        <span class="attr">title</span>: <span class="string">&#x27;Caching&#x27;</span>,</span><br><span class="line">      &#125;),</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">output</span>: &#123;</span><br><span class="line">      <span class="attr">filename</span>: <span class="string">&#x27;[name].[contenthash].js&#x27;</span>,</span><br><span class="line">      <span class="attr">path</span>: path.resolve(__dirname, <span class="string">&#x27;dist&#x27;</span>),</span><br><span class="line">      <span class="attr">clean</span>: <span class="literal">true</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">optimization</span>: &#123;</span><br><span class="line">    <span class="comment">// 保证vendor bundle不会随自身的module.id的变化而变化</span></span><br><span class="line">     <span class="attr">moduleIds</span>: <span class="string">&#x27;deterministic&#x27;</span>,</span><br><span class="line">     <span class="comment">// 将 runtime 代码拆分为一个单独的 chunk</span></span><br><span class="line">      <span class="attr">runtimeChunk</span>: <span class="string">&#x27;single&#x27;</span>,</span><br><span class="line">      <span class="attr">splitChunks</span>: &#123;</span><br><span class="line">        <span class="attr">cacheGroups</span>: &#123;</span><br><span class="line">        <span class="comment">// 将第三方库(library)（例如 lodash 或 react）提取到单独的 vendor chunk 文件中</span></span><br><span class="line">          <span class="attr">vendor</span>: &#123;</span><br><span class="line">            <span class="attr">test</span>: <span class="regexp">/[\\/]node_modules[\\/]/</span>,</span><br><span class="line">            name: <span class="string">&#x27;vendors&#x27;</span>,</span><br><span class="line">            <span class="attr">chunks</span>: <span class="string">&#x27;all&#x27;</span>,</span><br><span class="line">          &#125;,</span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="runtime-和-manifest"><a href="#runtime-和-manifest" class="headerlink" title="runtime 和 manifest"></a>runtime 和 manifest</h2><p>在使用 webpack 构建的典型应用程序或站点中，有三种主要的代码类型：</p>
+<ul>
+<li><p>你或你的团队编写的源码。</p>
+</li>
+<li><p>你的源码会依赖的任何第三方的 library 或 “vendor” 代码。</p>
+</li>
+<li><p>webpack 的 runtime 和 manifest，管理所有模块的交互。</p>
+<h3 id="什么是runtime"><a href="#什么是runtime" class="headerlink" title="什么是runtime"></a>什么是runtime</h3></li>
+</ul>
+<p>runtime，以及伴随的 manifest 数据，主要是指：在浏览器运行过程中，webpack 用来连接模块化应用程序所需的所有代码。</p>
+<p>它包含：在模块交互时，连接模块所需的加载和解析逻辑。包括：已经加载到浏览器中的连接模块逻辑，以及尚未加载模块的延迟加载逻辑。</p>
+<h3 id="什么是manifest"><a href="#什么是manifest" class="headerlink" title="什么是manifest"></a>什么是manifest</h3><p>一旦你的应用在浏览器中以 index.html 文件的形式被打开，一些 bundle 和应用需要的各种资源都需要用某种方式被加载与链接起来。在经过打包、压缩、为延迟加载而拆分为细小的 chunk 这些 webpack 优化 之后，你精心安排的 /src 目录的文件结构都已经不再存在。所以 webpack 如何管理所有所需模块之间的交互呢？这就是 manifest 数据用途的由来……</p>
+<p>当 compiler 开始执行、解析和映射应用程序时，它会保留所有模块的详细要点。这个数据集合称为 “manifest”，当完成打包并发送到浏览器时，runtime 会通过 manifest 来解析和加载模块。无论你选择哪种 模块语法，那些 import 或 require 语句现在都已经转换为 __webpack_require__ 方法，此方法指向模块标识符(module identifier)。通过使用 manifest 中的数据，runtime 将能够检索这些标识符，找出每个标识符背后对应的模块。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2021/10/26/%E5%88%9D%E8%AF%86webpack/" data-id="clpuo0yvg000dotmugjkhgcpv" class="article-share-link">
+        Share
+      </a>
+      
+    </footer>
+
+  </div>
+
+  
+  
+<nav class="article-nav">
+  
+  <a href="/2021/11/06/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="article-nav-link">
+    <strong class="article-nav-caption">Newer</strong>
+    <div class="article-nav-title">
+      
+      正则表达式
+      
+    </div>
+  </a>
+  
+  
+  <a href="/2021/07/13/React%20Context%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%AE%9E%E8%B7%B5/" class="article-nav-link">
+    <strong class="article-nav-caption">Older</strong>
+    <div class="article-nav-title">React Context从入门到实践</div>
+  </a>
+  
+</nav>
+
+  
+
+  
+  
+  
+  
+
+</article>
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>Hexo &copy; 2023</li>
+      
+        <li>quhandong</li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <!-- <li>theme  <a target="_blank" rel="noopener" href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li> -->
+    </ul>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="Hexo"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">Home</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">Archives</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.douyin.com/user/MS4wLjABAAAA4EevfdHrS1s-urfPJWWJEs-_c_qLu19jtr-eYdpBNBk?enter_from=main_page&enter_method=top_bar">Gallery</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2022/07/01/README/">About</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/copybtn.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+
+</html>

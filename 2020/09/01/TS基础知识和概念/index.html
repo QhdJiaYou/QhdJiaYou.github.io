@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <title>
+    TS基础知识和概念 |
+    
+    Hexo
+  </title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<script src="/js/pace.min.js"></script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article id="post-TS基础知识和概念" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h1 class="article-title" itemprop="name">
+  TS基础知识和概念
+</h1>
+
+
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/09/01/TS%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E5%92%8C%E6%A6%82%E5%BF%B5/" class="article-date">
+  <time datetime="2020-09-01T09:50:43.000Z" itemprop="datePublished">2020-09-01</time>
+</a>
+      
+    </div>
+    
+
+    
+    
+<div class="tocbot"></div>
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+      
+      <h2 id="字面量类型"><a href="#字面量类型" class="headerlink" title="字面量类型"></a>字面量类型</h2><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> bstring: <span class="string">&#x27;hello&#x27;</span> | <span class="string">&#x27;world&#x27;</span>;</span><br><span class="line">bstring = <span class="string">&#x27;heloo&#x27;</span>; <span class="comment">// 不允许，只能是&#x27;hello&#x27;或者&#x27;world&#x27;其中之一</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> zimiana = <span class="string">&#x27;hello&#x27;</span>;  <span class="comment">// 如果将const改为let，第7行赋值则不会报错</span></span><br><span class="line"><span class="comment">// const zimiana: &#x27;hello&#x27; = &#x27;hello&#x27;; // 实际上ts做了默认的类型声明</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> zimianb: <span class="keyword">typeof</span> zimiana = <span class="string">&#x27;h&#x27;</span>; <span class="comment">// 不允许，必须是hello</span></span><br><span class="line"><span class="comment">// const zimianb: &#x27;hello&#x27; = &#x27;h&#x27;;  //意思同上，一定会报错</span></span><br></pre></td></tr></table></figure>
+
+<p>使用不当的例子</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">iTakeFoo</span>(<span class="params">foo: <span class="string">&#x27;foo&#x27;</span></span>) </span>&#123;&#125;  <span class="comment">//‘foo’这个地方是类型</span></span><br><span class="line"><span class="keyword">const</span> test = &#123;</span><br><span class="line">  <span class="attr">someProp</span>: <span class="string">&#x27;foo&#x27;</span>,   <span class="comment">// &#x27;foo&#x27;这个地方是值</span></span><br><span class="line">&#125;;</span><br><span class="line">iTakeFoo(test.someProp); <span class="comment">//会报错</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 解决办法1：使用类型断言</span></span><br><span class="line"><span class="keyword">const</span> test = &#123;</span><br><span class="line">  <span class="attr">someProp</span>: <span class="string">&#x27;foo&#x27;</span> <span class="keyword">as</span> <span class="string">&#x27;foo&#x27;</span>,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 解决办法2: 使用类型注解</span></span><br><span class="line">type Test = &#123;</span><br><span class="line">  <span class="attr">someProp</span>: <span class="string">&#x27;foo&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> test: Test = &#123;</span><br><span class="line">  <span class="attr">someProp</span>: <span class="string">&#x27;foo&#x27;</span>,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p> JS对象这种key:value格式与类型声明定义很像，也是经常被人误用的地方，下面的函数参数声明也有错误用例</p>
+<h2 id="函数类型声明"><a href="#函数类型声明" class="headerlink" title="函数类型声明"></a>函数类型声明</h2><p>函数的定义方式有两种：函数声明和函数表达式</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 函数声明（Function Declaration）</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sum</span>(<span class="params">x： number, y: number</span>): <span class="title">number</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> x + y;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 函数表达式（Function Expression）OR 匿名函数</span></span><br><span class="line">type MySum = <span class="function">(<span class="params">x: number, y: number</span>) =&gt;</span> number</span><br><span class="line"><span class="keyword">let</span> mySum: MySum = <span class="function"><span class="keyword">function</span> (<span class="params">x, y</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> x + y;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 类型注释以后，输入多余的（或者少于要求的）参数，是不被TS允许的</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 函数重载</span></span><br><span class="line">type Reverse = &#123;   </span><br><span class="line">  (a: number): number;</span><br><span class="line">  (a: string): string;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 或者</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">reverse</span>(<span class="params">x: number</span>): <span class="title">number</span></span>;  <span class="comment">// 输入number，返回number</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">reverse</span>(<span class="params">x: string</span>): <span class="title">string</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">reverse</span>(<span class="params">x: number | string</span>): <span class="title">number</span> | <span class="title">string</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> x === <span class="string">&#x27;number&#x27;</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">Number</span>(x.toString().split(<span class="string">&#x27;&#x27;</span>).reverse().join(<span class="string">&#x27;&#x27;</span>));</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> x === <span class="string">&#x27;string&#x27;</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> x.split(<span class="string">&#x27;&#x27;</span>).reverse().join(<span class="string">&#x27;&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 优先从最前面的函数定义开始匹配，所以多个函数定义如果有包含关系，需要优先把精确的定义写在前面</span></span><br><span class="line"><span class="comment">// 用泛型抽象会更好</span></span><br><span class="line">type Reverse&lt;T&gt; = <span class="function">(<span class="params">x: T</span>) =&gt;</span> T;</span><br><span class="line"></span><br><span class="line"><span class="comment">//使用 ...rest 的方式获取函数中的剩余参数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">push</span>(<span class="params">array: any[], ...items: any[]</span>) </span>&#123;</span><br><span class="line">    items.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">item</span>) </span>&#123;</span><br><span class="line">        array.push(item);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<div style="color: red;">
+类型注释以后，输入多余的（或者少于要求的）参数，是不允许的，可以用 ? 表示可选的参数，可选参数后面不允许再出现必需参数，添加了默认值的参数被识别为可选的参数
+</div>
+
+<p>错误使用例子</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 函数参数使用解构赋值，将索引key值为x的值赋给number变量，所以此处number并不是类型</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params">&#123; x: number &#125;</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(x); <span class="comment">// Error</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 正确写法</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params">&#123; x &#125; : &#123;x : number&#125;</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(x);</span><br><span class="line">&#125;</span><br><span class="line">f(&#123;<span class="attr">x</span>:<span class="number">1</span>&#125;);</span><br></pre></td></tr></table></figure>
+
+<h2 id="交叉类型和联合类型"><a href="#交叉类型和联合类型" class="headerlink" title="交叉类型和联合类型"></a>交叉类型和联合类型</h2><h3 id="1、交叉类型-（-amp-相当于与）是多个类型的合并"><a href="#1、交叉类型-（-amp-相当于与）是多个类型的合并" class="headerlink" title="1、交叉类型 （&amp;相当于与）是多个类型的合并"></a>1、交叉类型 （&amp;相当于与）是多个类型的合并</h3><p>最好的例子就是Object.assign()</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">interface ObjectConstructor &#123;</span><br><span class="line">	<span class="comment">// 两个对象</span></span><br><span class="line">	assign&lt;T, U&gt;(target: T, <span class="attr">source</span>: U): T &amp; U;</span><br><span class="line">	<span class="comment">// 多个对象</span></span><br><span class="line">	assign&lt;T,U,V&gt;(target: T, <span class="attr">source1</span>: U, <span class="attr">source2</span>: V): T &amp; U &amp; V;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>简单的例子</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">interface IPerson &#123;</span><br><span class="line">    <span class="attr">name</span>: string,</span><br><span class="line">    <span class="attr">age</span>: number,</span><br><span class="line">&#125;</span><br><span class="line">interface IMan &#123;</span><br><span class="line">    <span class="attr">love</span>: string,</span><br><span class="line">    <span class="attr">age</span>: number,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> firstObj: IPerson &amp; IMan= &#123;  <span class="comment">// 必须两个同时满足</span></span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;jone&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">24</span>,</span><br><span class="line">    <span class="attr">love</span>: <span class="string">&#x27;jonk&#x27;</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、联合类型-（｜相当于或）是多个类型中的一个或多个"><a href="#2、联合类型-（｜相当于或）是多个类型中的一个或多个" class="headerlink" title="2、联合类型 （｜相当于或）是多个类型中的一个或多个"></a>2、联合类型 （｜相当于或）是多个类型中的一个或多个</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> secondObj: IPerson | IMan = &#123; <span class="comment">// 只需满足其中一个类型，或者两个都满足</span></span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;frg&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">56</span>,</span><br><span class="line">    <span class="attr">love</span>: <span class="string">&#x27;frgrg&#x27;</span>,</span><br><span class="line">&#125; <span class="comment">// 如果一个对象具有联合类型，就只能访问他们之间共有的部分age</span></span><br><span class="line"><span class="built_in">console</span>.log(secondObj.age);</span><br><span class="line"><span class="built_in">console</span>.log(secondObj.name); <span class="comment">// 不允许</span></span><br></pre></td></tr></table></figure>
+
+<p>解决上述问题</p>
+<p>1、使用类型断言</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ((secondObj <span class="keyword">as</span> IPerson).name) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log((secondObj <span class="keyword">as</span> IPerson).name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2、使用类型保护，这种 param is SomeType 的形式</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isIPerson</span>(<span class="params">obj: IPerson | IMan</span>): <span class="title">obj</span> <span class="title">is</span> <span class="title">IPerson</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (obj <span class="keyword">as</span> IPerson).name !== <span class="literal">undefined</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (isPerson(secondObj))&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(secondObj.name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>3、使用typeof或者instanceof，typeof用于基本类型，instanceof用于引用类型</p>
+<h2 id="type-amp-interface"><a href="#type-amp-interface" class="headerlink" title="type &amp; interface"></a>type &amp; interface</h2><p>type ：用来给一个新类型起别名</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">type Content = &#123;</span><br><span class="line">    <span class="attr">value</span> : number;</span><br><span class="line">    name: string;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 接口</span></span><br><span class="line">interface Content &#123;</span><br><span class="line">   <span class="attr">value</span>: number;</span><br><span class="line">   name: string;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>interface：描述对象的形状（Shape）</p>
+<p>面向对象的思想：将不同类之间的公共特性，提取出来定义为接口，供多个类各自实现。而我们平时使用大多数时候是用来定义JS对象的结构，比如定义state和props的类型；</p>
+<p>接口可以继承接口，类可以实现接口；</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">interface Alarm &#123;</span><br><span class="line">    alert(): <span class="keyword">void</span>;</span><br><span class="line">&#125;</span><br><span class="line">interface LightableAlarm <span class="keyword">extends</span> Alarm &#123;</span><br><span class="line">    lightOn(): <span class="keyword">void</span>;</span><br><span class="line">    lightOff(): <span class="keyword">void</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Door</span> </span>&#123;&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SecurityDoor</span> <span class="keyword">extends</span> <span class="title">Door</span> <span class="title">implements</span> <span class="title">Alarm</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="title">alert</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;SecurityDoor alert&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><font color="red">在TS中接口还可以继承类</font>：用class定义一个类的时候，同时也创建了同名的实例类型（不包括构造函数、静态属性和静态方法）</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">    <span class="attr">x</span>: number;</span><br><span class="line">    y: number;</span><br><span class="line">    <span class="function"><span class="title">constructor</span>(<span class="params">x: number, y: number</span>)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.x = x;</span><br><span class="line">        <span class="built_in">this</span>.y = y;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">interface PointInstanceType &#123;</span><br><span class="line">    <span class="attr">x</span>: number;</span><br><span class="line">    y: number;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 等价于 interface Point3d extends PointInstanceType</span></span><br><span class="line">interface Point3d <span class="keyword">extends</span> Point &#123;</span><br><span class="line">    <span class="attr">z</span>: number;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> point3d: Point3d = &#123;<span class="attr">x</span>: <span class="number">1</span>, <span class="attr">y</span>: <span class="number">2</span>, <span class="attr">z</span>: <span class="number">3</span>&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>type与interface的区别</p>
+<table>
+<thead>
+<tr>
+<th>type特点</th>
+<th>interface特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>要扩展已有type需要创建新type，不可以重名</td>
+<td>同名interface可自动聚合，也可以和已有的同名class聚合，方便使用者自行扩展</td>
+</tr>
+<tr>
+<td>不能被extends和implements</td>
+<td>能被extends和implements</td>
+</tr>
+<tr>
+<td>表达功能更强大，支持更复杂的类型操作，不局限于object/class/function</td>
+<td>自身只能表示object/class/function的类型</td>
+</tr>
+</tbody></table>
+<p><font color="red">TS声明合并：如果定义了两个相同名字的函数、接口或类，那么它们会合并成一个类型</font></p>
+<h2 id="null和undefined类型"><a href="#null和undefined类型" class="headerlink" title="null和undefined类型"></a>null和undefined类型</h2><p>在tsconfig.json中设置”strictNullChecks”: false时（这也是默认值），null和undefined可以赋值给任何类型变量，反之不能，有一个特殊情况：</p>
+<p>“strictNullChecks”: true时, 函数的可选参数类型会默认添加undefined类型</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fucnull</span>(<span class="params">x: number, y?:string</span>): <span class="title">number</span> </span>&#123;  <span class="comment">// y的类型是string | undefined</span></span><br><span class="line">    <span class="keyword">if</span> (y) &#123;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(fucnull(<span class="number">2</span>, <span class="literal">null</span>)); <span class="comment">// 不允许</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h2><p>泛型使得类型可以编程，可以抽象出适用更加广泛的类型，可以与函数做类比，类型参数就像函数参数一样，可以有默认值，除此之外，还可以用extends对参数本身需要满足的条件进行限制</p>
+<p>在定义一个function、type、interface、class时，名称后面加上&lt;&gt;表示接受类型参数</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">swap</span>&lt;<span class="title">T</span>, <span class="title">K</span>&gt;(<span class="params">v1: T, v2: K</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> [v2, v1]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时结果没有按照我们预期的被推断成 [K, T]，而是被推断成了 (K | T)[]，这是不符合要求的。这是因为 TypeScript 默认我们数组中的元素是可变的，所以它会「悲观的」推断我们可能会改变元素的顺序。鼠标放到运行函数时的swap上，我们可以看出类型被推断为</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">swap</span>&lt;<span class="title">Admin</span>, <span class="title">User</span>&gt;(<span class="params">v1: Admin, v2: User</span>): (<span class="params">Admin | User</span>)[]</span></span><br></pre></td></tr></table></figure>
+
+<p>要改变这一行为，我们加上 as const 来声明它为常量，严格保证顺序，如下</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">swap</span>&lt;<span class="title">T</span>, <span class="title">K</span>&gt;(<span class="params">v1: T, v2: K</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> [v2, v1] <span class="keyword">as</span> <span class="keyword">const</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此时鼠标hover类型被推断为</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">swap</span>&lt;<span class="title">Admin</span>, <span class="title">User</span>&gt;(<span class="params">v1: Admin, v2: User</span>): <span class="title">readonly</span> [<span class="title">User</span>, <span class="title">Admin</span>]</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="infer、extends关键字"><a href="#infer、extends关键字" class="headerlink" title="infer、extends关键字"></a>infer、extends关键字</h2><p><strong>extends</strong>: 既可当作一个动词来扩展已有类型（接口扩展），也可当作一个形容词来对类型进行条件限定（常常用在泛型中）</p>
+<p>T extends U ? T : U    判断有条件类型</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Exclude(排除): 属于T不属于U的类型联合，不存在时为never</span></span><br><span class="line">type Exclude&lt;T, U&gt; = T <span class="keyword">extends</span> U ? never : T;</span><br><span class="line"><span class="comment">// Extract(抽取): 属于T且属于U的类型联合，不存在时为never</span></span><br><span class="line">type Extract&lt;T, U&gt; = T <span class="keyword">extends</span> U ? T : never;</span><br></pre></td></tr></table></figure>
+
+<p>举个例子</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">type A = Exclude&lt;<span class="string">&#x27;x&#x27;</span> | <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;x&#x27;</span> | <span class="string">&#x27;y&#x27;</span> | <span class="string">&#x27;z&#x27;</span>&gt;</span><br><span class="line"><span class="keyword">const</span> aValue: A = <span class="string">&#x27;a&#x27;</span>;  <span class="comment">// aValue的值只能是&#x27;a&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>infer</strong> 作用是让TypeScript自己推断，并将推断的结果存储到一个临时名字中，且只能用于extends语句中</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Obtain the return type of a function type</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">type ReturnType&lt;T <span class="keyword">extends</span> (...args: any) =&gt; any&gt; = T <span class="keyword">extends</span> (...args: any) =&gt; infer R ? R : any;  <span class="comment">// 给函数的返回值类型定义为R临时变量</span></span><br><span class="line"><span class="comment">// 示例</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params"></span>) </span>&#123; <span class="keyword">return</span> &#123; <span class="attr">a</span>: <span class="number">3</span>, <span class="attr">b</span>: <span class="number">2</span>&#125;; &#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">    a: number</span></span><br><span class="line"><span class="comment">    b: number</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">type FReturn = ReturnType&lt;<span class="keyword">typeof</span> f&gt;;</span><br></pre></td></tr></table></figure>
+
+<p>【注】ReturnType可以获取函数返回值的类型。但要注意不要滥用这个工具类型，契约高于实现，这个工具类型是由实现反推契约，容易出错，另外ReturnType过多也会降低代码可读性</p>
+<h2 id="索引签名-amp-索引类型"><a href="#索引签名-amp-索引类型" class="headerlink" title="索引签名 &amp; 索引类型"></a>索引签名 &amp; 索引类型</h2><h3 id="索引签名"><a href="#索引签名" class="headerlink" title="索引签名"></a>索引签名</h3><p>JavaScript 在一个对象类型的索引签名上会隐式调用 toString 方法，无论哪种类型本质上都是字符串的形式存储</p>
+<p>而在TS中，索引签名的类型必须是string或者number, 且强制用户必须明确的写出 toString()方法（除了number类型以外）</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 写法1:索引可以是string或者number</span></span><br><span class="line">interface Demo1&#123;</span><br><span class="line">    [key: string]: string;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//写法2:索引只能是number</span></span><br><span class="line">interface Demo2 &#123;</span><br><span class="line">    [key: number]: string;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> res: Demo1 = &#123;<span class="number">0</span> : <span class="string">&#x27;def&#x27;</span>&#125;;  <span class="comment">// JS隐式调用toString()方法</span></span><br><span class="line"><span class="keyword">const</span> res: Demo1 = &#123;<span class="attr">name</span> : <span class="string">&#x27;def&#x27;</span>&#125;; <span class="comment">// 或者 &#123;&#x27;name&#x27; : &#x27;def&#x27;&#125;</span></span><br><span class="line"><span class="keyword">const</span> res: Demo2 = &#123;<span class="attr">name</span> : <span class="string">&#x27;def&#x27;</span>&#125;; <span class="comment">// 或者 &#123;&#x27;name&#x27; : &#x27;def&#x27;&#125;  //不允许，报错</span></span><br></pre></td></tr></table></figure>
+
+<p>当你声明一个索引签名时，所有明确的成员都必须符合索引签名</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">interface Bar &#123;</span><br><span class="line">    [key: string]: number;</span><br><span class="line">    x: number;</span><br><span class="line">    y: string; <span class="comment">// Error: y 属性必须为 number 类型</span></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="索引类型-keyof关键字"><a href="#索引类型-keyof关键字" class="headerlink" title="索引类型(keyof关键字)"></a>索引类型(keyof关键字)</h3><p>keyof  interfaceName | typeName: 获取接口或类型上的所有已知属性名的联合，跟Object.keys()有点像，但是keyof取类型的键, 【容易混淆的是TS中typeof，typeof后面跟的是值变量, keyof后面是类型变量，他们的返回值都是类型变量】</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">interface Person &#123;</span><br><span class="line">    <span class="attr">name</span>: string</span><br><span class="line">    <span class="attr">age</span>: number</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// type keys = &#x27;name&#x27; | &#x27;age&#x27;;</span></span><br><span class="line">type keys = keyof Person;</span><br></pre></td></tr></table></figure>
+<h2 id="映射类型"><a href="#映射类型" class="headerlink" title="映射类型"></a>映射类型</h2><p>我们可能会遇到这么一些需求：</p>
+<p>将一个现有类型的每个属性都变为可选的或者部分可选的</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">interface PersonPartial &#123;</span><br><span class="line">  name?: string</span><br><span class="line">  age?: number</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 或者</span></span><br><span class="line">interface PersonPartial &#123;</span><br><span class="line">  <span class="attr">name</span> : string</span><br><span class="line">  age?: number</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>将每个属性都变为只读的</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">interface IPersonReadonly &#123;</span><br><span class="line">  readonly name: string</span><br><span class="line">  readonly age: number</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们可以利用ts提供的映射类型简写，通过这种映射的方式，我们可以将组件的参数进行更好的分类声明，同时也可以避免写多个？或者readonly这种声明方式</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">type Readonly&lt;T&gt; = &#123;</span><br><span class="line">  readonly [P <span class="keyword">in</span> keyof T]: T[P]</span><br><span class="line">&#125;</span><br><span class="line">type Partial&lt;T&gt; = &#123;</span><br><span class="line">  [P <span class="keyword">in</span> keyof T]?: T[P]</span><br><span class="line">&#125;</span><br><span class="line">type PersonReadonly = Readonly&lt;Person&gt;</span><br><span class="line">type PersonPartial = Partial&lt;Person&gt;</span><br><span class="line"><span class="comment">// 或者</span></span><br><span class="line">type PersonPartial = &#123; <span class="comment">// 声明可选参数</span></span><br><span class="line">  <span class="attr">age</span>: number;</span><br><span class="line">&#125;</span><br><span class="line">type Person = &#123;  <span class="comment">//声明必填参数</span></span><br><span class="line">  <span class="attr">name</span>: string;</span><br><span class="line">&#125; &amp; Partial&lt;PersonPartial&gt;</span><br></pre></td></tr></table></figure>
+
+<p>我们还可以自己定义更多的通用映射类型</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">type Nullrable&lt;T&gt; = &#123;</span><br><span class="line">    [P <span class="keyword">in</span> keyof T]: T[P] | <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="类型推论-amp-类型断言"><a href="#类型推论-amp-类型断言" class="headerlink" title="类型推论 &amp; 类型断言"></a>类型推论 &amp; 类型断言</h2><h3 id="类型推论"><a href="#类型推论" class="headerlink" title="类型推论"></a>类型推论</h3><p>如果变量在定义的时候没有赋值，不管之后有没有赋值，都会被推断成 any 类型而完全不被类型检查</p>
+<h3 id="类型断言"><a href="#类型断言" class="headerlink" title="类型断言"></a>类型断言</h3><p>语法：值 as 类型  或者  &lt;类型&gt;值</p>
+<p>类型断言的限制：【总的来说，若 A 兼容 B，那么 A 能够被断言为 B，B 也能被断言为 A】</p>
+<ul>
+<li>联合类型可以被断言为其中一个类型</li>
+<li>父类可以被断言为子类，子类也可以被断言为父类</li>
+<li>任何类型都可以被断言为 any，any 可以被断言为任何类型</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// TypeScript 是结构类型系统，类型之间的对比只会比较它们最终的结构，而会忽略它们定义时的关系</span></span><br><span class="line">interface Animal &#123;</span><br><span class="line">    <span class="attr">name</span>: string;</span><br><span class="line">&#125;</span><br><span class="line">interface Cat &#123;</span><br><span class="line">    <span class="attr">name</span>: string;</span><br><span class="line">    run(): <span class="keyword">void</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 等同于</span></span><br><span class="line">interface Animal &#123;</span><br><span class="line">    <span class="attr">name</span>: string;</span><br><span class="line">&#125;</span><br><span class="line">interface Cat <span class="keyword">extends</span> Animal &#123;</span><br><span class="line">    run(): <span class="keyword">void</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>【<font color="red"> 注意 </font>】类型断言不是类型转换，它不会真的影响到变量的类型。它只能够「欺骗」TypeScript 编译器，无法避免运行时的错误，反而滥用类型断言可能会导致运行时错误</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/09/01/TS%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E5%92%8C%E6%A6%82%E5%BF%B5/" data-id="clpuo0yvb0007otmu1fj528mp" class="article-share-link">
+        Share
+      </a>
+      
+    </footer>
+
+  </div>
+
+  
+  
+<nav class="article-nav">
+  
+  <a href="/2020/09/23/TS%E5%AE%9E%E8%B7%B5%E7%A7%AF%E7%B4%AF/" class="article-nav-link">
+    <strong class="article-nav-caption">Newer</strong>
+    <div class="article-nav-title">
+      
+      TS实践工程应用
+      
+    </div>
+  </a>
+  
+  
+  <a href="/2020/09/01/%E5%88%9D%E8%AF%86react/" class="article-nav-link">
+    <strong class="article-nav-caption">Older</strong>
+    <div class="article-nav-title">初识React</div>
+  </a>
+  
+</nav>
+
+  
+
+  
+  
+  
+  
+
+</article>
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>Hexo &copy; 2023</li>
+      
+        <li>quhandong</li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <!-- <li>theme  <a target="_blank" rel="noopener" href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li> -->
+    </ul>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="Hexo"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">Home</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">Archives</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.douyin.com/user/MS4wLjABAAAA4EevfdHrS1s-urfPJWWJEs-_c_qLu19jtr-eYdpBNBk?enter_from=main_page&enter_method=top_bar">Gallery</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2022/07/01/README/">About</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/copybtn.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+
+</html>

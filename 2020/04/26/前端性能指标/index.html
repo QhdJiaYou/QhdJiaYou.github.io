@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <title>
+    前端常用性能指标 |
+    
+    Hexo
+  </title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<script src="/js/pace.min.js"></script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article id="post-前端性能指标" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h1 class="article-title" itemprop="name">
+  前端常用性能指标
+</h1>
+
+
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/04/26/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87/" class="article-date">
+  <time datetime="2020-04-26T09:50:43.000Z" itemprop="datePublished">2020-04-26</time>
+</a>
+      
+    </div>
+    
+
+    
+    
+<div class="tocbot"></div>
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+      
+      <h2 id="常用指标"><a href="#常用指标" class="headerlink" title="常用指标"></a>常用指标</h2><h3 id="1、首字节时间（TTFB）"><a href="#1、首字节时间（TTFB）" class="headerlink" title="1、首字节时间（TTFB）"></a>1、首字节时间（TTFB）</h3><p>终端用户首次请求 web 服务器和 web 服务器响应到终端用户之间这段时间</p>
+<h3 id="2、白屏时间"><a href="#2、白屏时间" class="headerlink" title="2、白屏时间"></a>2、白屏时间</h3><p>白屏时间 = firstPaint - pageStartTime;</p>
+<p>我们通常认为浏览器开始渲染 body 标签或者解析完 head 标签的时刻就是页面白屏结束的时间点</p>
+<h3 id="3、DOM-Ready时间-DOMContentLoaded"><a href="#3、DOM-Ready时间-DOMContentLoaded" class="headerlink" title="3、DOM Ready时间 (DOMContentLoaded)"></a>3、DOM Ready时间 (DOMContentLoaded)</h3><p>当初始的 HTML 文档被完全加载和解析完成之后，DOMContentLoaded 事件被触发，而无需等待样式表、图像和子框架的完全加载</p>
+<h3 id="4、首屏时间"><a href="#4、首屏时间" class="headerlink" title="4、首屏时间"></a>4、首屏时间</h3><p>定义：用户看到第一屏页面的时间</p>
+<p>获取：不断获取屏幕截图，当截图不再变化时，可以视为首屏时间。</p>
+<p>一般影响首屏的主要因素是图片的加载，通过页面加载完后判断图片是否在首屏内，找出加载最慢的一张即可视为首屏时间。</p>
+<p>优化建议：</p>
+<ul>
+<li>页面首屏的显示尽量不要依赖于js代码，js尽量放到domReady后执行或加载</li>
+<li>首屏外的图片延迟加载</li>
+<li>首屏结构尽量简单，首屏外的css可延迟加载</li>
+</ul>
+<h3 id="5、页面完全加载时间（onload）"><a href="#5、页面完全加载时间（onload）" class="headerlink" title="5、页面完全加载时间（onload）"></a>5、页面完全加载时间（onload）</h3><p>定义：原始文档和所有引用的内容已经加载完成，用户最明显的感觉就是浏览器上loading状态结束。</p>
+<p>获取： window.onload事件触发的时间</p>
+<p>优化建议：</p>
+<ul>
+<li>减少资源的请求数和文件大小</li>
+<li>将非初始化脚本放到onLoad之后执行</li>
+<li>无需同步的脚本异步加载</li>
+</ul>
+<h3 id="6、外部资源加载时间"><a href="#6、外部资源加载时间" class="headerlink" title="6、外部资源加载时间"></a>6、外部资源加载时间</h3><p>等于 页面完全加载时间 减去DOM ready时间</p>
+<h2 id="常用统计口径TP50、TP90"><a href="#常用统计口径TP50、TP90" class="headerlink" title="常用统计口径TP50、TP90"></a>常用统计口径TP50、TP90</h2><p>TP50指的是中位数，TP90指的是90分位数</p>
+<h2 id="性能优化的方式"><a href="#性能优化的方式" class="headerlink" title="性能优化的方式"></a>性能优化的方式</h2><p>影响前端性能主要有这几个方面：网络请求（http请求）、css优化、页面渲染、js执行、缓存、图片等等</p>
+<ol>
+<li>减少 http 请求次数 合并css、js代码、静态资源图片，可以使用雪碧图</li>
+<li>减少 http 请求的大小 减少没必要的图片、js、css；使用gzip压缩资源文件大小；对代码进行压缩、移除注释；压缩静态资源图片</li>
+<li>将 css 和 js 放到外部文件中，避免直接使用 style 和 script 标签 在 HTML 文件上引用外部资源可以有效利用浏览器的静态资源缓存</li>
+<li>避免空的 href 和 src。当<link>标签的href属性为空，或&lt;script&gt;、&lt;img&gt;、&lt;iframe&gt;标签的src属性为空时，浏览器在渲染过程中仍会将href属性或者src属性中的空内容进行加载，直至加载失败，这样就阻塞了页面中其他资源的下载进程，而且最终加载到的内容是无效的</li>
+<li>合理设置浏览器缓存策略（强缓存、协商缓存），通过设置请求头参数。<ol start="6">
+<li>强缓存：避免频繁向服务器端发送请求，在页面中的Cache-Control 或 Expires头部有效时，浏览器将直接从缓存中读取内容，不再向服务器端发送请求；</li>
+<li>协商缓存：对于未修改的文件，静态资源服务器会向浏览器端返回304，让浏览器从缓存中读取文件，减少Web资源下载的带宽消耗并降低服务器负载</li>
+</ol>
+</li>
+<li>减少页面重定向次数</li>
+<li>合理使用CDN来存储文件</li>
+<li>对于页面中加载时间过长的 CSS 或 JavaScript 文件，需要进行合理拆分或延后加载，保证关键渲染路径的资源能快速加载完成</li>
+<li>异步加载JavaScript资源</li>
+<li>尽可能的减少DOM的数量和深度，标签越多，层级越深，解析消耗的时间越久</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/04/26/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87/" data-id="clpuo0yvh000fotmu2tq1bs0i" class="article-share-link">
+        Share
+      </a>
+      
+    </footer>
+
+  </div>
+
+  
+  
+<nav class="article-nav">
+  
+  <a href="/2020/05/06/%E4%BA%86%E8%A7%A3Window%E5%AF%B9%E8%B1%A1/" class="article-nav-link">
+    <strong class="article-nav-caption">Newer</strong>
+    <div class="article-nav-title">
+      
+      了解Window对象
+      
+    </div>
+  </a>
+  
+  
+  <a href="/2020/03/06/JS%E5%9F%BA%E7%A1%80%E6%96%B9%E6%B3%95/" class="article-nav-link">
+    <strong class="article-nav-caption">Older</strong>
+    <div class="article-nav-title">JS基础方法</div>
+  </a>
+  
+</nav>
+
+  
+
+  
+  
+  
+  
+
+</article>
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>Hexo &copy; 2023</li>
+      
+        <li>quhandong</li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <!-- <li>theme  <a target="_blank" rel="noopener" href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li> -->
+    </ul>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="Hexo"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">Home</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">Archives</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.douyin.com/user/MS4wLjABAAAA4EevfdHrS1s-urfPJWWJEs-_c_qLu19jtr-eYdpBNBk?enter_from=main_page&enter_method=top_bar">Gallery</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2022/07/01/README/">About</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/copybtn.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+
+</html>

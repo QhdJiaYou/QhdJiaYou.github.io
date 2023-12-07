@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <title>
+    初识React |
+    
+    Hexo
+  </title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<script src="/js/pace.min.js"></script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article id="post-初识react" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h1 class="article-title" itemprop="name">
+  初识React
+</h1>
+
+
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/09/01/%E5%88%9D%E8%AF%86react/" class="article-date">
+  <time datetime="2020-09-01T09:50:43.000Z" itemprop="datePublished">2020-09-01</time>
+</a>
+      
+    </div>
+    
+
+    
+    
+<div class="tocbot"></div>
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+      
+      <h2 id="React生命周期函数"><a href="#React生命周期函数" class="headerlink" title="React生命周期函数"></a>React生命周期函数</h2><h3 id="挂载阶段只执行一次"><a href="#挂载阶段只执行一次" class="headerlink" title="挂载阶段只执行一次"></a><strong>挂载阶段只执行一次</strong></h3><p><code>constructor()</code>一般用来做初始化工作，例如初始化state</p>
+<p><code>componentWillMount()</code>   已更名为  UNSAFE_componentWillMount()  如果在此函数中使用setState()并不会触发渲染，因为render()还没有执行，所以一般初始化state使用constructor()函数。</p>
+<p><code>render()</code></p>
+<p><code>componentDidMount()</code>一般用于请求异步加载的数据，添加事件监听</p>
+<h3 id="更新阶段可多次执行，当props或state发生变化时"><a href="#更新阶段可多次执行，当props或state发生变化时" class="headerlink" title="更新阶段可多次执行，当props或state发生变化时"></a>更新阶段可多次执行，当props或state发生变化时</h3><p><code>componentWillReceiveProps(object:nextProps)</code> 已更名为  UNSAFE_componentWillReceiveProps()       已加载组件收到新的props时调用：如果父组件导致该组件重新渲染，这个方法也会被调用，即使props没有任何改变，如果您只想处理更改，请务必比较当前值和下一个值，你可以比较this.props和nextProps，并在这个方法中使用this.setState()执行状态转换。</p>
+<p><code>shouldComponentUpdate(object:nextProps, object:nextState)</code>组件判断是否重新渲染时调用</p>
+<p><code>componentWillUpdate(object:nextProps, object:nextState)</code>已更名为 UNSAFE_componentWillUpdate() 组件被重新渲染之前: 不要在这个函数中使用setState()</p>
+<p><code>render()</code></p>
+<p><code>componentDidUpdate(object:prevProps, object:prevState)</code>处理在生命周期中由于state或者props的变化触发新的请求</p>
+<p><code>componentWillUnmount()</code>已经移除真实DOM时</p>
+<p><strong>React旧版本生命周期图</strong>：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/5287253-315eac1c26082f08.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1200/format/webp" alt="avatar"></p>
+<p><strong>React新版本生命周期图</strong>：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/5287253-19b835e6e7802233.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1200/format/webp" alt="avatar"></p>
+<h3 id="变更的部分"><a href="#变更的部分" class="headerlink" title="变更的部分"></a>变更的部分</h3><p>新的react生命周期去掉了以下三个：</p>
+<ul>
+<li>componentWillMount</li>
+<li>componentWillReceiveProps</li>
+<li>componentWillUpdate</li>
+</ul>
+<p>同时为了弥补失去上面三个函数的不足又加了两个：</p>
+<ul>
+<li>static getDerivedStateFromProps</li>
+<li>getSnapshotBeforeUpdate</li>
+</ul>
+<p>当然，这个更替是缓慢的，在整个16版本里都能无障碍的使用旧的三生命周期，但值得注意的是，旧的生命周期（unsafe）不能和新的生命周期同时出现在一个组件，否则会报错“你使用了一个不安全的生命周期”。</p>
+<h3 id="为什么要改"><a href="#为什么要改" class="headerlink" title="为什么要改"></a>为什么要改</h3><p>旧的生命周期十分完整，基本可以捕捉到组件更新的每一个state/props/ref，没有什么从逻辑上的毛病。</p>
+<p>但是架不住官方自己搞事情，react打算在17版本推出新的Async Rendering（也就是Fiber架构），提出一种可被打断的生命周期，而<strong>可以被打断的阶段正是实际dom挂载之前的虚拟dom构建阶段</strong>，也就是要被去掉的三个生命周期。</p>
+<p>生命周期一旦被打断，下次恢复的时候又会再跑一次之前的生命周期，因此componentWillMount，componentWillReceiveProps， componentWillUpdate都不能保证只在挂载/拿到props/状态变化的时候刷新一次了，所以这三个方法被标记为不安全。</p>
+<h3 id="两个新的生命周期"><a href="#两个新的生命周期" class="headerlink" title="两个新的生命周期"></a>两个新的生命周期</h3><ul>
+<li><strong>static getDerivedStateFromProps(nextProps, prevState)</strong></li>
+</ul>
+<p><strong>触发时间</strong>：组件每次被渲染时（包括组件构建之后），每次获取新的props或state之后。</p>
+<p><strong>返回值</strong>：每次接收新的props之后都会返回一个对象作为新的state,返回null则说明不需要更新state</p>
+<p><strong>作用</strong>：配合componentDidUpdate,可以覆盖componentWillReceiveProps的所有用法</p>
+<ul>
+<li><strong>getSnapshotBeforeUpdate(prevProps, prevState)</strong></li>
+</ul>
+<p><strong>触发时间</strong>: update发生的时候，在render之后，在组件dom渲染挂载之前。</p>
+<p><strong>返回值</strong>：作为componentDidUpdate(prevProps, prevState, snapshot)的第三个参数。</p>
+<p><strong>作用</strong>：配合componentDidUpdate, 可以覆盖componentWillUpdate的所有用法。</p>
+<h2 id="React组件区别"><a href="#React组件区别" class="headerlink" title="React组件区别"></a>React组件区别</h2><p>1、组件的名称必须以大写字母开头</p>
+<p>2、组件的返回值只能有一个根元素</p>
+<p>3、函数组件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function Welcome (props) &#123;</span><br><span class="line">  return &lt;h1&gt;Welcome &#123; props.name &#125;&lt;/h1&gt;</span><br><span class="line">&#125;</span><br><span class="line">ReactDOM.render(&lt;Welcome name=&#x27;react&#x27; /&gt;, document.getElementById(&#x27;root&#x27;));</span><br></pre></td></tr></table></figure>
+
+<p>4、类组件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class Welcome extends React.Component(props) &#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">  	return (</span><br><span class="line">      &lt;h1&gt;Welcome &#123; this.props.name &#125;&lt;/h1&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">ReactDOM.render(&lt;Welcome name=&#x27;react&#x27; /&gt;, document.getElementById(&#x27;root&#x27;));</span><br></pre></td></tr></table></figure>
+
+<p>5、所有react组件必须都是<strong>纯函数</strong>(函数内部不会修改输入参数，输入相同，输出必然相同)，无论是哪种组件都不能修改它自己的props</p>
+<p>6、组件的属性和状态改变都会更新视图</p>
+<p>7、函数组件和类组件的区别</p>
+<table>
+<thead>
+<tr>
+<th>区别</th>
+<th>函数组件</th>
+<th>类组件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>是否有this</td>
+<td>没有</td>
+<td>有</td>
+</tr>
+<tr>
+<td>是否有生命周期</td>
+<td>没有</td>
+<td>有</td>
+</tr>
+<tr>
+<td>是否有状态state</td>
+<td>没有</td>
+<td>有</td>
+</tr>
+</tbody></table>
+<p>函数组件的性能要比类组件的性能高，因为类组件使用的时候要实例化，函数组件直接执行函数取返回结果即可。</p>
+<h2 id="render-何时被触发"><a href="#render-何时被触发" class="headerlink" title="render()何时被触发"></a>render()何时被触发</h2><ol>
+<li>一个组件必须通过setState()去改变this.state的状态，才能引发重新渲染，或者是组件的props状态改变也可引发重新渲染；</li>
+<li>父组件重新渲染也会导致子组件的重新渲染，有时候为了避免不必要的渲染，我们需要在shouldComponentUpdate()中将新老state和props做对比，如果没有发生改变就返回false，可以阻止component渲染；</li>
+<li>当然有时候这种简单的判断，显得有些多余和样板化，于是react就提供了PureComponent来自动对比；</li>
+<li><strong>但是PureComponent自动添加的shouldComponentUpate函数，只是对props和state进行浅比较(shadow comparison)，当props或者state本身是嵌套对象或数组时，浅比较并不能得到预期的结果，这很可能会导致实际的props和state发生了变化，<em>但组件却没有更新的问题</em></strong>。</li>
+<li>浅比较都做了什么？</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">if (this._compositeType === CompositeTypes.PureClass) &#123;</span><br><span class="line">shouldUpdate = !shallowEqual(prevProps, nextProps)</span><br><span class="line">|| !shallowEqual(inst.state, nextState);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>比较 <code>Object.keys(state | props)</code> 的长度是否一致</li>
+<li>每一个 <code>key</code>是否两者都有</li>
+<li>相同的<code>key</code>是否是同一个引用</li>
+</ul>
+<h2 id="state更新"><a href="#state更新" class="headerlink" title="state更新"></a><strong>state</strong>更新</h2><ol>
+<li>异步更新：由 <strong>React</strong> 控制的事件处理过程 <strong>setState</strong> 不会同步更新 <strong>this.state</strong>！<ul>
+<li>在大部分的使用情况下，我们都是使用了 React 库中的表单组件，例如 select、input、button 等等，它们都是 React 库中人造的组件与事件，是处于 React 库的控制之下，比如组件原色 onClick 都是经过 React 包装。在这个情况下，setState 就会以异步的方式执行。也就意味着大部分函数中都会异步更新。</li>
+</ul>
+</li>
+<li>同步更新：在 <strong>React</strong> 控制之外的情况， <strong>setState</strong> 会同步更新 <strong>this.state</strong>！<ul>
+<li>通过addEventListener直接添加的事件处理函数，或者setTimeout/setInterval产生的异步调用可以同步更新。</li>
+</ul>
+</li>
+</ol>
+<h2 id="使用setState注意"><a href="#使用setState注意" class="headerlink" title="使用setState注意"></a>使用<strong>setState</strong>注意</h2><ol>
+<li>不要直接修改state，通过setState()方法修改才能触发重复渲染</li>
+<li>setState()的参数不是一个对象，而是一个函数时，这个函数默认两个参数分别是state和props，这个函数应该返回一个对象表示对state的更改</li>
+<li>每次setState产生新的state会依次被存入一个队列，然后会根据isBathingUpdates变量判断是直接更新this.state，还是放进dirtyComponent里回头再说，isBathingUpdates默认是false, 也就表示setState会同步更新this.state。但是，当React在调用事件处理函数之前就会调batchedUpdates，这个函数会把isBatchingUpdates修改为true，造成的后果就是由React控制的事件处理过程setState不会同步更新this.state。</li>
+<li>函数用到更新的state变量时，要将函数写到setState()函数的第二个参数（接受一个回调函数）</li>
+<li>事实上，setState 方法与包含在其中的执行是一个很复杂的过程，从 React 最初的版本到现在，也有无数次的修改。它的工作除了要更动 this.state 之外，还要负责触发重新渲染，这里面要经过 React 核心 diff 算法，最终才能决定是否要进行重渲染，以及如何渲染。而且为了批次与效能的理由，多个 setState 呼叫有可能在执行过程中还需要被合并，所以它被设计以延时的来进行执行是相当合理的。 </li>
+<li>React官方建议把state当作是不可变对象，state中包含的所有状态都应该是不可变的对象，当state中的某个状态发生变化时，我们应该重新创建这个状态对象，而不是直接修改原来的状态。</li>
+</ol>
+<p>​       <strong>值类型变量</strong>：number,boolean,string,null,undefined本身就是不可变的，修改时直接赋值就可以了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">this.setState(&#123;</span><br><span class="line">   num: 1,</span><br><span class="line">   string: &#x27;hello&#x27;,</span><br><span class="line">   ready: true</span><br><span class="line"> &#125;);</span><br></pre></td></tr></table></figure>
+
+<p>​    <strong>数组类型变量</strong>：若要从原来的数组中获取部分作为新的state值，应使用slice、concat、filter这种不会修改            原数组的函数，不应该使用push、pop、 shift、 unshift、 splice在原来的数组上进行操作。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">let students = this.state.students;</span><br><span class="line">   this.setState(&#123;</span><br><span class="line">     students: students.concat([&#x27;xiaohua&#x27;])</span><br><span class="line">   &#125;);</span><br><span class="line"></span><br><span class="line">   //或者ES6语法</span><br><span class="line">   this.setState(preState =&gt; (&#123;</span><br><span class="line">     students: [ ...preState.students, &#x27;xiaohua&#x27;]</span><br><span class="line">   &#125;);</span><br></pre></td></tr></table></figure>
+
+<p>​    <strong>普通对象</strong>：对象也是可变类型，修改对象类型的状态时，应该保证不会修改原来的状态，可以使用ES6的Object.assign()方法，或者对象扩展的语法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">//Object.assign方法</span><br><span class="line">this.setState(preState =&gt; (&#123;</span><br><span class="line">  school: Object.assign(&#123;&#125;, preState.school, &#123;classNum: 10&#125;)</span><br><span class="line">&#125;));</span><br><span class="line"></span><br><span class="line">//对象扩展语法</span><br><span class="line">let school = this.state.school;</span><br><span class="line">this.setState(&#123;</span><br><span class="line">  school: &#123; ...school, classNum: 10 &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="PureComponent"><a href="#PureComponent" class="headerlink" title="PureComponent"></a>PureComponent</h2><p>React15.3中新增的类，在普通的component中，我们为了减少不必要的渲染render，提高性能，会在shouldComponentUpdate()中判断组件的props和state是否发生了改变，如果没有变化就返回false不会触发render方法，省去了Virtual DOM 的生成和对比过程。</p>
+<h2 id="React路由"><a href="#React路由" class="headerlink" title="React路由"></a>React路由</h2><p>目前官网同时维护2.x(react-router)和4.x(react-router-dom)版本的路由，两个版本用法不同，不能兼容，现在我们使用npm安装react-router基本都是4.x版本的。</p>
+<h3 id="属性exact和strict"><a href="#属性exact和strict" class="headerlink" title="属性exact和strict"></a>属性exact和strict</h3><p>我们在使用route的时候匹配路径的规则是模糊的，类似正则匹配的贪婪匹配，为了避免如下图所示匹配失效的情况，我们应该正确使用exact和strict属性。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ReactDom.render(</span><br><span class="line">    &lt;HashRouter&gt;</span><br><span class="line">        &lt;Switch&gt;</span><br><span class="line">            &lt;Route path = &#x27;/&#x27; component=&#123;App&#125; /&gt;</span><br><span class="line">            &lt;Route path = &#x27;/PageA&#x27; component=&#123;PageA&#125; /&gt;</span><br><span class="line">            &lt;Route path = &#x27;/PageB&#x27; component=&#123;PageB&#125; /&gt;</span><br><span class="line">        &lt;/Switch&gt;</span><br><span class="line">    &lt;/HashRouter&gt;, document.getElementById(&#x27;root&#x27;)</span><br><span class="line"> );</span><br></pre></td></tr></table></figure>
+
+<p>这种情况下访问<a target="_blank" rel="noopener" href="http://localhost:3000/#/%E5%92%8Chttp://localhost:3000/#/PageA%E9%83%BD%E4%BC%9A%E6%B8%B2%E6%9F%93App%E7%BB%84%E4%BB%B6%EF%BC%8C%E5%8D%B3%E4%BD%BFhash%E5%80%BC%E5%B7%B2%E7%BB%8F%E6%94%B9%E5%8F%98%E3%80%82">http://localhost:3000/#/和http://localhost:3000/#/PageA都会渲染App组件，即使hash值已经改变。</a></p>
+<p><strong>exact属性</strong>：默认不写为false，当它为true时，路径中的hash值必须和path完全一致才渲染对应的组件（如果strict属性为false，则末尾是否包含反斜杠结尾不影响匹配结果）</p>
+<p><strong>strict属性</strong>：默认不写为false，如果strict属性为true，并且path中不包含反斜杠结尾，那么它也不能匹配包含反斜杠结尾的路径。(一般配合exact同时使用)</p>
+<p>两个属性同时使用是最精确的匹配</p>
+<table>
+<thead>
+<tr>
+<th align="center">exact</th>
+<th>strict</th>
+<th>path</th>
+<th>Location.pathname</th>
+<th>Matches?</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">True</td>
+<td>False</td>
+<td>/one</td>
+<td>/one/</td>
+<td>True</td>
+</tr>
+<tr>
+<td align="center">True</td>
+<td>True</td>
+<td>/one</td>
+<td>/one/</td>
+<td>False</td>
+</tr>
+</tbody></table>
+<p><strong>注意</strong>：通过hash路由进行页面跳转导航时，只会加载相应的组件内容，运行组件的生命周期函数，不会运行模块的代码，也就是组件之外的属于模块级别的代码，这些属于模块的代码只在第一次加载该页面时运行。</p>
+<p>失败场景：组件中某个样式的展示是根据声明在模块中的变量来决定，此时通过path的改变跳转到其他组件，然后再通过路由跳转回原来的页面，由于第二次跳转到这个页面时不会在运行模块级别的代码，就可能会导致组件中某些样式的展示与第一次不同。</p>
+<p><strong>react-router-dom使用注意：</strong></p>
+<p>如果想在某个路由下新建子路由，那么这个路由匹配时不能使用exact，否则会找不到页面</p>
+<p><Route/>放哪组件就显示在哪</p>
+<p>使用<BrowserRouter>需要服务端做配置，将任何请求都转发到index.html中的根路由上</p>
+<p><HashRouter>不需要做额外处理，因为发送到服务器的请求永远都是#前面的内容，都是同一个页面，#后面的值用来做前端页面路由，对浏览器的兼容性更好，支持老版本浏览器。</p>
+<Link>里面一般用props.match.url
+
+<p><Route>里面一般使用props.match.path</p>
+<p><code>HashRouter</code> 使用 URL 中的 hash（#）部分去创建形如 <code>example.com/#/some/path</code> 的路由，hash值后面的内容都不会发送到服务端，hash后面的内容纯粹是前端页面路由。</p>
+<p><code>BrowserRouter</code> 是使用浏览器中的<a target="_blank" rel="noopener" href="https://www.renfei.org/blog/html5-introduction-3-history-api.html">HTML5的History API</a>处理 URL的，每次都会创建一个像example.com/list/123`这样真实的 URL 发送给服务端。</p>
+<p><strong>为什么BrowserRouter需要服务端配置？</strong></p>
+<p>因为真实URL其实是指向服务器资源，当通过真实URL访问网站的时候，第一次访问的是网站的域名，这个时候可以正常加载我们的网站js等文件，而用户手动刷新网页时，由于路径是指向服务器的真实路径，服务器端没有做相应的路由配置，就会导致资源不存在，用户访问的资源不存在，返回给用户的是404错误。<br>通过hashHistory来生成的URL就不会出现这样的问题，因为他不是指向真实的路由。</p>
+<p><strong>服务端配置原理？</strong></p>
+<p>其本质的原理就是利用服务端将任何请求都指向<code>index.html</code>，而在React应用中index.html又刚好通过React-Router配置了相应的路由，我们让服务器返回index.html，后面就交给前端路由来实现无刷新加载对应页面。</p>
+<h2 id="React之ref"><a href="#React之ref" class="headerlink" title="React之ref"></a>React之ref</h2><p>在典型的React数据流中，props是唯一的父组件与子组件间的通讯方式，通过给子组件传递不同的参数，也可以达到组件复用的优势。但是在某些情况下，被更改的元素可能是一个react组件的实例，或者是一个DOM元素，这个时候就要用ref。</p>
+<h4 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h4><p>一般在构造函数中React.createRef()创建的ref，当组件被创建时分配给实例变量，这样render中的DOM节点就能够被引用，但是不要过度使用ref</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">class MyComponent extends React.Component &#123;</span><br><span class="line">  constructor(props) &#123;</span><br><span class="line">    super(props);</span><br><span class="line">    this.myRef = React.createRef();</span><br><span class="line">  &#125;</span><br><span class="line">  render() &#123;</span><br><span class="line">    return &lt;div ref=&#123;this.myRef&#125; /&gt;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="访问"><a href="#访问" class="headerlink" title="访问"></a><strong>访问</strong></h4><p>当一个ref通过render放入一个元素中，要想在其它函数中获得该元素对象的引用，可以通过ref的current属性得到。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const node = this.myRef.current;</span><br></pre></td></tr></table></figure>
+
+<h4 id="ref的值根据节点类型的不同而不同"><a href="#ref的值根据节点类型的不同而不同" class="headerlink" title="ref的值根据节点类型的不同而不同"></a><strong>ref的值根据节点类型的不同而不同</strong></h4><ol>
+<li>当ref属性用于html元素，在构造器中通过React.createRef()函数创建的ref，接收底层DOM元素作为它的current属性</li>
+<li>当ref属性用于传统的类组件，ref对象接收挂载好的组件实例作为它的current属性</li>
+<li>ref属性不能用于函数式组件上，因为他们并没有实例，但是我们可以在函数式组件中使用ref属性。</li>
+</ol>
+<h4 id="ref使用注意"><a href="#ref使用注意" class="headerlink" title="ref使用注意"></a>ref使用注意</h4><p>一般什么时候使用？</p>
+<ul>
+<li>管理焦点、文本选择、媒体回放</li>
+<li>触发必要动画；</li>
+<li>整合第三方DOM库</li>
+</ul>
+<p>避免对任何可以声明式解决的问题使用Refs；比如相对于暴露一个对话框组件的open()、close()方法，请使用isOpen prop！不要过度使用！</p>
+<h4 id="向父组件暴露子组件的Dom元素的引用使用ref-forwarding"><a href="#向父组件暴露子组件的Dom元素的引用使用ref-forwarding" class="headerlink" title="向父组件暴露子组件的Dom元素的引用使用ref forwarding"></a>向父组件暴露子组件的Dom元素的引用使用<a target="_blank" rel="noopener" href="https://reactjs.org/docs/forwarding-refs.html">ref forwarding</a></h4><p>在很罕见的情况下，我们需要从父组件访问到子组件的DOM节点。通常来说我们不建议这样做，因为这样破坏了组件的封装性，但是在某些情况下对于类似：触发聚焦、改变子元素DOM节点的大小、位置等情况非常有用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const FancyButton = React.forwardRef((props, ref) =&gt; (</span><br><span class="line">  &lt;button ref=&#123;ref&#125; className=&quot;FancyButton&quot;&gt;</span><br><span class="line">    &#123;props.children&#125;</span><br><span class="line">  &lt;/button&gt;</span><br><span class="line">));</span><br><span class="line"></span><br><span class="line">// You can now get a ref directly to the DOM button:</span><br><span class="line">const ref = React.createRef();</span><br><span class="line">&lt;FancyButton ref=&#123;ref&#125;&gt;Click me!&lt;/FancyButton&gt;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>：传统方式定义的类组件以及函数组件是不能够接收参数ref的，只有通过React.forwardRef()函数创建的组件才可以接受ref参数。</p>
+<h4 id="回调ref"><a href="#回调ref" class="headerlink" title="回调ref"></a>回调ref</h4><p>React将会在组件挂载时使用DOM元素调用ref回调，在组件卸载时使用null调用ref回调。ref回调都会在componentDidMount或者componentDidUpdate生命周期钩子之前被调用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">class CustomTextInput extends React.Component &#123;</span><br><span class="line">  constructor(props) &#123;</span><br><span class="line">    super(props);</span><br><span class="line">    this.textInput = null;</span><br><span class="line">    this.setTextInputRef = element =&gt; &#123;</span><br><span class="line">        this.textInput = element;</span><br><span class="line">    &#125;;</span><br><span class="line">    this.focusTextInput = () =&gt; &#123;</span><br><span class="line">      // 通过原生DOM API聚焦文本</span><br><span class="line">      if (this.textInput) this.textInput.focus();</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  componentDidMount() &#123;</span><br><span class="line">    // 在挂载时自动聚焦</span><br><span class="line">    this.focusTextInput();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    // 使用&#x27;ref&#x27;回调去在一个实例域中储存文本输入DOM元素的引用(比如, this.textInput).</span><br><span class="line">    return (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;input</span><br><span class="line">          type=&quot;text&quot;</span><br><span class="line">          ref=&#123;this.setTextInputRef&#125;</span><br><span class="line">        /&gt;</span><br><span class="line">        &lt;input</span><br><span class="line">          type=&quot;button&quot;</span><br><span class="line">          value=&quot;Focus the text input&quot;</span><br><span class="line">          onClick=&#123;this.focusTextInput&#125;</span><br><span class="line">        /&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/09/01/%E5%88%9D%E8%AF%86react/" data-id="clpuo0yvf000cotmu1e4f6jdy" class="article-share-link">
+        Share
+      </a>
+      
+    </footer>
+
+  </div>
+
+  
+  
+<nav class="article-nav">
+  
+  <a href="/2020/09/01/TS%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E5%92%8C%E6%A6%82%E5%BF%B5/" class="article-nav-link">
+    <strong class="article-nav-caption">Newer</strong>
+    <div class="article-nav-title">
+      
+      TS基础知识和概念
+      
+    </div>
+  </a>
+  
+  
+  <a href="/2020/05/06/%E4%BA%86%E8%A7%A3Window%E5%AF%B9%E8%B1%A1/" class="article-nav-link">
+    <strong class="article-nav-caption">Older</strong>
+    <div class="article-nav-title">了解Window对象</div>
+  </a>
+  
+</nav>
+
+  
+
+  
+  
+  
+  
+
+</article>
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>Hexo &copy; 2023</li>
+      
+        <li>quhandong</li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <!-- <li>theme  <a target="_blank" rel="noopener" href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li> -->
+    </ul>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="Hexo"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">Home</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">Archives</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.douyin.com/user/MS4wLjABAAAA4EevfdHrS1s-urfPJWWJEs-_c_qLu19jtr-eYdpBNBk?enter_from=main_page&enter_method=top_bar">Gallery</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2022/07/01/README/">About</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/copybtn.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+
+</html>

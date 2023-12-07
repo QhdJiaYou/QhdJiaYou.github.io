@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <title>
+    ESlint插件开发 |
+    
+    Hexo
+  </title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<script src="/js/pace.min.js"></script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article id="post-Eslint插件开发" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h1 class="article-title" itemprop="name">
+  ESlint插件开发
+</h1>
+
+
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/09/27/Eslint%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91/" class="article-date">
+  <time datetime="2020-09-27T07:50:43.000Z" itemprop="datePublished">2020-09-27</time>
+</a>
+      
+    </div>
+    
+
+    
+    
+<div class="tocbot"></div>
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+      
+      <h2 id="解析器调研"><a href="#解析器调研" class="headerlink" title="解析器调研"></a>解析器调研</h2><p>将JS/TS解析成AST结构的语法树，有很多解析工具，每种解析工具解析出来的大体结构类似，但是节点命名各有特色</p>
+<p>解析器对注释内容支持程度对比</p>
+<table>
+<thead>
+<tr>
+<th align="center">解析器</th>
+<th>@babel/parser</th>
+<th>@typescript-eslint/parser</th>
+<th>tsquery</th>
+<th>typescript</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">解析注释</td>
+<td>是</td>
+<td>否</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td align="center">区分块注释和行注释</td>
+<td>是</td>
+<td>否</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td align="center">解析TS</td>
+<td>否</td>
+<td>是</td>
+<td>是</td>
+<td>是</td>
+</tr>
+</tbody></table>
+<p>经过对比发现，我们只能使用tsquery 或者typescript ，<br>但是，TSquery相比typescript自带的解析工具有更加优秀的地方</p>
+<ul>
+<li>当需要查找满足条件的子级的 ast 节点时，需要做多次比较</li>
+<li>对满足某一条件的多个不同类型的节点需要比较多次，编写满足条件麻烦</li>
+<li>对分布在同一文件中的多个同名标识符，不能统一提取和处理</li>
+</ul>
+<h2 id="使用TSquery"><a href="#使用TSquery" class="headerlink" title="使用TSquery"></a>使用TSquery</h2><p>建议使用<a target="_blank" rel="noopener" href="https://astexplorer.net/%E7%BA%BF%E4%B8%8A%E8%A7%A3%E6%9E%90%E5%B7%A5%E5%85%B7%EF%BC%8C%E9%80%89%E6%8B%A9typescript%E8%A7%A3%E6%9E%90%E5%99%A8%E8%A7%A3%E6%9E%90ts%E4%BB%A3%E7%A0%81%EF%BC%8C%E5%BE%97%E5%88%B0%E7%9A%84ast%E7%BB%93%E6%9E%84%E4%B8%8Etsquery%E7%9A%84%E7%9B%B8%E5%90%8C">https://astexplorer.net/线上解析工具，选择typescript解析器解析ts代码，得到的ast结构与tsquery的相同</a></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> tsquery = <span class="built_in">require</span>(<span class="string">&#x27;@phenomnomnominal/tsquery&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> ts = <span class="built_in">require</span>(<span class="string">&#x27;ntypescript&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> tsQueryAst = tsquery.tsquery.ast(srcCode); </span><br><span class="line"><span class="keyword">const</span> ast = ts.createSourceFile(<span class="string">&#x27;foo.ts&#x27;</span>, srcCode, ts.ScriptTarget.ES5, <span class="literal">true</span>);</span><br></pre></td></tr></table></figure>
+
+<p>使用tsquery构建AST语法树，本质上就是调用ts的createSourcefile，所以tsquery生成的ast结构与typescript解析后的结构相同</p>
+<h2 id="eslintrc-js配置信息"><a href="#eslintrc-js配置信息" class="headerlink" title="eslintrc.js配置信息"></a>eslintrc.js配置信息</h2><p>官方文档：</p>
+<ul>
+<li>英文：<a target="_blank" rel="noopener" href="https://eslint.org/docs/user-guide/configuring">https://eslint.org/docs/user-guide/configuring</a></li>
+<li>中文：<a target="_blank" rel="noopener" href="https://cn.eslint.org/docs/user-guide/configuring">https://cn.eslint.org/docs/user-guide/configuring</a></li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="comment">// 因为eslint生效规则是内层优先，这个配置告诉eslint找当前配置文件不需要往父级查找</span></span><br><span class="line">  <span class="attr">root</span>: <span class="literal">true</span>, </span><br><span class="line">  <span class="comment">/** </span></span><br><span class="line"><span class="comment">  *  ESlint会检测未声明的变量，并发出告警，但是有些变量是我们引入的第三方库声明的，此时就需要提前在配置中声明</span></span><br><span class="line"><span class="comment">  * &#x27;readonly&#x27; 或 false - 表示该全局变量是只读的</span></span><br><span class="line"><span class="comment">  * ‘writeable&#x27; 或 true - 表示该全局变量是可写可读的</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  <span class="attr">globals</span>: &#123; <span class="comment">// 指定全局变量是只读的还是可写的</span></span><br><span class="line">    <span class="attr">$</span>: <span class="literal">false</span>, <span class="comment">// jQuery对象</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// 不同环境下，全局变量各有不同，env提供对一个环境定义的一组全局变量的预设，避免了我们一个一个的在globals中声明</span></span><br><span class="line">  <span class="attr">env</span>: &#123; </span><br><span class="line">    <span class="attr">browser</span>: <span class="literal">true</span>, <span class="comment">// 浏览器环境,console属性只有在浏览器环境下才有定义，如果不支持browser环境，会出现console is undefined</span></span><br><span class="line">    <span class="attr">es6</span>: <span class="literal">true</span>, <span class="comment">// ES6环境, 如果不支持，就无法正常识别es6的特殊语法，比如const</span></span><br><span class="line">    <span class="attr">node</span>: <span class="literal">true</span>, <span class="comment">// node环境,比如__dirname变量</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">extends</span>: [ <span class="comment">// 插件中config字段配置好的规则集合，往往是最佳实践,它配置的内容实际就是一份份别人配置好的.eslintrc.js</span></span><br><span class="line">    <span class="string">&#x27;@wmfe/eslint-config-mt/eslintrc.react.js&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;@wmfe/eslint-config-mt/eslintrc.typescript-react.js&#x27;</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">plugins</span>: [ <span class="comment">// 插件名称，省略前缀eslint-plugin-，可以灵活结合rules开启校验规则</span></span><br><span class="line">    <span class="string">&#x27;react&#x27;</span>,</span><br><span class="line">  ],</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">  &quot;off&quot; 或 0 - 关闭规则</span></span><br><span class="line"><span class="comment">	&quot;warn&quot; 或 1 - 开启规则，使用警告级别的错误：warn (不会导致程序退出)</span></span><br><span class="line"><span class="comment">	&quot;error&quot; 或 2 - 开启规则，使用错误级别的错误：error (当被触发的时候，程序会退出)</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  <span class="attr">rules</span>: &#123; <span class="comment">// 开启plugins中规则检查能力需要配置rules, &quot;off&quot;或0（关闭规则）&quot;warn&quot;或1（开启警告规则）“error”或2（开启错误规则）</span></span><br><span class="line">    <span class="string">&#x27;eslint-plugin-react/jsx-boolean-value&#x27;</span>: [<span class="string">&quot;error&quot;</span>],</span><br><span class="line">    <span class="string">&quot;no-restricted-globals&quot;</span>: [ <span class="comment">// 有些插件规则支持参数配置，数组中可以传递参数</span></span><br><span class="line">            <span class="string">&quot;error&quot;</span>,</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="string">&quot;name&quot;</span>: <span class="string">&quot;event&quot;</span>,</span><br><span class="line">                <span class="string">&quot;message&quot;</span>: <span class="string">&quot;Use local parameter instead.&quot;</span></span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="string">&quot;name&quot;</span>: <span class="string">&quot;fdescribe&quot;</span>,</span><br><span class="line">                <span class="string">&quot;message&quot;</span>: <span class="string">&quot;Do not commit fdescribe. Use describe instead.&quot;</span></span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">overrides</span>: [ <span class="comment">// 配置特定文件类型进行规则校验，比如下面的规则只对ts文件校验</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;files&quot;</span>: [<span class="string">&quot;*.ts&quot;</span>, <span class="string">&quot;*.tsx&quot;</span>],</span><br><span class="line">      <span class="string">&quot;rules&quot;</span>: &#123;</span><br><span class="line">        <span class="string">&#x27;@typescript-eslint/explicit-function-return-type&#x27;</span>: <span class="number">2</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  <span class="comment">// 用来指定eslint解析器的，使用什么方式解析成ast语法树</span></span><br><span class="line">  <span class="comment">// espima(默认)</span></span><br><span class="line">  <span class="comment">// babel最先推出支持ES6语法的babel-eslint, 让ESlint逐渐火了起来</span></span><br><span class="line">  <span class="comment">// @typescript-eslint/parser 是TS团队实现的</span></span><br><span class="line">  <span class="attr">parser</span>:<span class="string">&quot;@typescript-eslint/parser&quot;</span>,</span><br><span class="line">  <span class="attr">parserOptions</span>: &#123; <span class="comment">// 解析器配置参数</span></span><br><span class="line">    <span class="attr">ecmaFeatures</span>: &#123;</span><br><span class="line">      <span class="attr">globalReturn</span>: <span class="literal">true</span>, <span class="comment">// 允许在全局作用域下使用return语句</span></span><br><span class="line">      <span class="attr">impliedStrict</span>: <span class="literal">true</span>, <span class="comment">// 启用全局 strict mode</span></span><br><span class="line">      <span class="attr">jsx</span>: <span class="literal">true</span>, <span class="comment">// 启用jsx</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">ecmaVersion</span>: <span class="number">2018</span>, <span class="comment">// es版本号，默认为5，也可以用年份，比如2015（同6）</span></span><br><span class="line">    <span class="attr">sourceType</span>: <span class="string">&#x27;module&#x27;</span>, <span class="comment">// js的导入方式，默认是script</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">settings</span>:&#123; <span class="comment">// 提供给每一个将被执行的规则,如果你想添加的自定义规则而且使它们可以访问到相同的信息，这将会很有用，并且很容易配置。</span></span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>env 可选的环境很多，预设值都在<a target="_blank" rel="noopener" href="https://github.com/eslint/eslint/blob/v6.0.1/conf/environments.js">这个文件</a>中进行定义，查看源码可以发现，其预设变量都引用自<a target="_blank" rel="noopener" href="https://github.com/sindresorhus/globals/blob/main/globals.json">globals包</a></p>
+<p>配置扩展</p>
+<p>可以通过eslint-plugin-react插件<a target="_blank" rel="noopener" href="https://github.com/jsx-eslint/eslint-plugin-react/blob/master/index.js">源码文件</a>看到，它默认实现了两种最佳实践all以及recommened</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  deprecatedRules,</span><br><span class="line">  <span class="attr">rules</span>: allRules,</span><br><span class="line">  <span class="attr">configs</span>: &#123; <span class="comment">// 配置可普遍通用的规则集合</span></span><br><span class="line">    <span class="attr">recommended</span>: &#123;</span><br><span class="line">      <span class="attr">plugins</span>: [</span><br><span class="line">        <span class="string">&#x27;react&#x27;</span></span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">parserOptions</span>: &#123;</span><br><span class="line">        <span class="attr">ecmaFeatures</span>: &#123;</span><br><span class="line">          <span class="attr">jsx</span>: <span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="attr">rules</span>: &#123;</span><br><span class="line">        <span class="string">&#x27;react/display-name&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">&#x27;react/jsx-key&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">&#x27;react/jsx-no-comment-textnodes&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">&#x27;react/jsx-no-duplicate-props&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">&#x27;react/jsx-no-target-blank&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">&#x27;react/jsx-no-undef&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">&#x27;react/jsx-uses-react&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">&#x27;react/jsx-uses-vars&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">&#x27;react/no-children-prop&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">&#x27;react/no-danger-with-children&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">&#x27;react/no-deprecated&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">&#x27;react/no-direct-mutation-state&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">&#x27;react/no-find-dom-node&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">&#x27;react/no-is-mounted&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">&#x27;react/no-render-return-value&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">&#x27;react/no-string-refs&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">&#x27;react/no-unescaped-entities&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">&#x27;react/no-unknown-property&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">&#x27;react/no-unsafe&#x27;</span>: <span class="number">0</span>,</span><br><span class="line">        <span class="string">&#x27;react/prop-types&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">&#x27;react/react-in-jsx-scope&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">&#x27;react/require-render-return&#x27;</span>: <span class="number">2</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">all</span>: &#123;</span><br><span class="line">      <span class="attr">plugins</span>: [</span><br><span class="line">        <span class="string">&#x27;react&#x27;</span></span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">parserOptions</span>: &#123;</span><br><span class="line">        <span class="attr">ecmaFeatures</span>: &#123;</span><br><span class="line">          <span class="attr">jsx</span>: <span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="attr">rules</span>: activeRulesConfig</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>使用的时候，如果碰到和自己风格或者规范有冲突的规则，那直接在rules中重新定义就可以了</p>
+<p>扩展一般支持三种类型：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.export = &#123;</span><br><span class="line">    <span class="attr">extends</span>: [</span><br><span class="line">        <span class="string">&#x27;eslint:recommended&#x27;</span>, <span class="comment">// eslint:开头是ESlint官方的扩展，一共有两个：eslint:recommended、eslint:all</span></span><br><span class="line">        <span class="string">&#x27;plugin:eslint-plugin-react/recommended&#x27;</span>, <span class="comment">// plugin: 开头的是扩展是插件类型，也可以直接在 plugins 属性中进行设置</span></span><br><span class="line">        <span class="string">&#x27;eslint-config-standard&#x27;</span>, <span class="comment">// 来自npm包，官方规定 npm 包的扩展必须以 eslint-config- 开头，使用时可以省略这个头，eslint-config-standard 可以直接简写成 standard</span></span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://juejin.im/post/6844904035271573511#heading-3">AST抽象语法树入门</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/47d9b2a365c5">Esprima学习</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.im/post/6844903901292920846#heading-21">如何写eslint插件</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/09/27/Eslint%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91/" data-id="clpuo0yv50001otmu0aqs6zvr" class="article-share-link">
+        Share
+      </a>
+      
+    </footer>
+
+  </div>
+
+  
+  
+<nav class="article-nav">
+  
+  <a href="/2020/11/06/%E5%89%8D%E7%AB%AF%E6%A8%A1%E5%9D%97%E5%8C%96%E6%96%B9%E6%A1%88/" class="article-nav-link">
+    <strong class="article-nav-caption">Newer</strong>
+    <div class="article-nav-title">
+      
+      前端模块化方案
+      
+    </div>
+  </a>
+  
+  
+  <a href="/2020/09/23/TS%E5%AE%9E%E8%B7%B5%E7%A7%AF%E7%B4%AF/" class="article-nav-link">
+    <strong class="article-nav-caption">Older</strong>
+    <div class="article-nav-title">TS实践工程应用</div>
+  </a>
+  
+</nav>
+
+  
+
+  
+  
+  
+  
+
+</article>
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>Hexo &copy; 2023</li>
+      
+        <li>quhandong</li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <!-- <li>theme  <a target="_blank" rel="noopener" href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li> -->
+    </ul>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="Hexo"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">Home</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">Archives</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.douyin.com/user/MS4wLjABAAAA4EevfdHrS1s-urfPJWWJEs-_c_qLu19jtr-eYdpBNBk?enter_from=main_page&enter_method=top_bar">Gallery</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2022/07/01/README/">About</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/copybtn.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+
+</html>

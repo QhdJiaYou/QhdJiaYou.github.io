@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <title>
+    计算机网络基础 |
+    
+    Hexo
+  </title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<script src="/js/pace.min.js"></script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article id="post-计算机网络" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h1 class="article-title" itemprop="name">
+  计算机网络基础
+</h1>
+
+
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/11/26/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" class="article-date">
+  <time datetime="2020-11-26T09:50:43.000Z" itemprop="datePublished">2020-11-26</time>
+</a>
+      
+    </div>
+    
+
+    
+    
+<div class="tocbot"></div>
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+      
+      <h2 id="网络七层协议模型（OSI）"><a href="#网络七层协议模型（OSI）" class="headerlink" title="网络七层协议模型（OSI）"></a>网络七层协议模型（OSI）</h2><ol>
+<li>应用层: 与其它计算机进行通讯的一个应用，它是对应应用程序的通信服务的，比如<strong>HTTP、网络管理（SNMP简单网络管理协议），远程登录（Telnet），文件传输（TFTP）、域名系统（DNS）</strong></li>
+<li>表示层: 这一层的主要功能是定义数据格式及加密，可以选择二进制或ASCII格式传输，比如，<strong>加密，ASCII</strong>等</li>
+<li>会话层：它定义了如何开始、控制和结束一个会话，包括对多个双向消息的控制和管理，以便在只完成连续消息的一部分时可以通知应用，从而使表示层看到的数据是连续的，在会话层及以上的高层次中，数据传送的单位不再另外命名，而是统称为报文。示例：<strong>RPC，SSL、TSL</strong></li>
+<li>传输层: 这层的功能包括是否选择差错恢复协议还是无差错恢复协议，及在同一主机上对不同应用的数据流的输入进行复用，还包括对收到的顺序不对的数据包的重新排序功能。示例：TCP，UDP，SPX。这一层的数据单元也称作数据包(packets)。但是，当你谈论TCP等具体的协议时又有特殊的叫法，TCP的数据单元称为段 (segments)而UDP协议的数据单元称为“数据报(datagrams)”。 <strong>TCP、UDP</strong></li>
+<li>网络层: 这层对端到端的包传输进行定义，它定义了能够标识所有结点的逻辑地址，还定义了路由实现的方式和学习的方式。为了适应最大传输单元长度小于包长度的传输介质，网络层还定义了如何将一个包分解成更小的包的分段方法。示例：<strong>Internet协议（IP）、Internet控制信息协议（ICMP）、地址解析协议（ARP）</strong>等。在这一层，数据的单位称为数据包(packet)。</li>
+<li>数据链路层: 它定义了在单个链路上如何传输数据。这些协议与被讨论的各种介质有关。示例：<strong>ATM，FDDI</strong>等。在这一层，数据的单位称为帧(frame)。</li>
+<li>物理层: OSI的物理层规范是有关传输介质的特这些规范通常也参考了其他组织制定的标准。连接头、帧、帧的使用、电流、编码及光调制等都属于各种物理层规范中的内容。物理层常用多个规范完成对所有细节的定义。示例：<strong>Rj45，802.3</strong>等。这一层，数据单位是比特（bit）</li>
+</ol>
+<h2 id="TCP与UDP的区别"><a href="#TCP与UDP的区别" class="headerlink" title="TCP与UDP的区别"></a>TCP与UDP的区别</h2><ol>
+<li>基于连接与无连接</li>
+<li>对系统资源的要求（TCP较多，UDP少）</li>
+<li>UDP程序结构较简单；</li>
+<li>流模式与数据报模式 ；</li>
+<li>TCP保证数据正确性，UDP可能丢包；</li>
+<li>TCP保证数据顺序，UDP不保证。</li>
+</ol>
+<h2 id="HTTP与HTTPS的区别"><a href="#HTTP与HTTPS的区别" class="headerlink" title="HTTP与HTTPS的区别"></a>HTTP与HTTPS的区别</h2><p>HTTPS 经由 HTTP 进行通信，但利用 SSL/TLS 来加密数据包。HTTPS 开发的主要目的，是提供对网站服务器的身份认证，保护交换数据的隐私与完整性。</p>
+<ol>
+<li>HTTP 明文传输，数据都是未加密的，安全性较差，HTTPS（SSL+HTTP） 数据传输过程是加密的，安全性较好。</li>
+<li>使用 HTTPS 协议需要到 CA（Certificate Authority，数字证书认证机构） 申请证书，一般免费证书较少，因而需要一定费用。证书颁发机构如：Symantec、Comodo、GoDaddy 和 GlobalSign 等。</li>
+<li>HTTP 页面响应速度比 HTTPS 快，主要是因为 HTTP 使用 TCP 三次握手建立连接，客户端和服务器需要交换 3 个包，而 HTTPS除了 TCP 的三个包，还要加上 ssl 握手需要的 9 个包，所以一共是 12 个包。</li>
+<li>HTTP 和HTTPS 使用的是完全不同的连接方式，用的端口也不一样，前者是 80，后者是 443。</li>
+<li>HTTPS 其实就是建构在 SSL/TLS 之上的 HTTP 协议，所以，要比较 HTTPS 比 HTTP 要更耗费服务器资源。</li>
+</ol>
+<h2 id="get-post区别"><a href="#get-post区别" class="headerlink" title="get/post区别"></a>get/post区别</h2><ul>
+<li><strong>请求参数</strong>：GET请求参数是通过URL传递的，多个参数以&amp;连接，POST请求放在request body中。</li>
+<li><strong>请求缓存</strong>：GET请求会被缓存，而POST请求不会，除非手动设置。</li>
+<li><strong>收藏为书签</strong>：GET请求支持，POST请求不支持。</li>
+<li><strong>安全性</strong>：POST比GET安全，GET请求在浏览器回退时是无害的，而POST会再次请求。</li>
+<li><strong>历史记录</strong>：GET请求参数会被完整保留在浏览历史记录里，而POST中的参数不会被保留。</li>
+<li><strong>编码方式</strong>：GET请求只能进行url编码，而POST支持多种编码方式。</li>
+<li><strong>对参数的数据类型</strong>：GET只接受ASCII字符，而POST没有限制。</li>
+</ul>
+<h2 id="从输入url到展示网页发生了什么？"><a href="#从输入url到展示网页发生了什么？" class="headerlink" title="从输入url到展示网页发生了什么？"></a>从输入url到展示网页发生了什么？</h2><ul>
+<li>域名解析，找到网址对应的IP地址</li>
+<li>向服务器发送HTTP请求</li>
+<li>建立TCP链接</li>
+<li>服务器重定向响应，可能会经历nginx反向代理，域名转发等等</li>
+<li>服务器处理请求，返回响应内容，一般会先返回主文件index.html</li>
+<li>浏览器解析HTML文件，生成DOM树</li>
+<li>异步加载静态资源（CSS、图片、iconfont等等），静态资源一般会放到CDN上存储，允许浏览器进行缓存。生成渲染树</li>
+<li>DOM树和渲染树都加载完毕时，进行绘制</li>
+<li>这个过程一旦遇到js文件，正常情况下要挂起html解析线程，去加载并执行js文件内容，但是可以通过defer或async，让加载可以异步请求，二者的区别是defer是将执行推迟到html文档解析完成， async是异步加载完立即执行</li>
+</ul>
+<p>JS单线程运行<br>EventLoop 时间循环队列<br>宏任务、微任务</p>
+<h2 id="浏览器架构"><a href="#浏览器架构" class="headerlink" title="浏览器架构"></a>浏览器架构</h2><h3 id="单进程浏览器时代"><a href="#单进程浏览器时代" class="headerlink" title="单进程浏览器时代"></a>单进程浏览器时代</h3><p>单进程浏览器是指浏览器所以模块都运行再同一个进程里，这些模块包含了网络、插件、JavaScript 运行环境、渲染引擎和页面等</p>
+<p><strong>缺点：</strong><br>不稳定性<br>不流畅<br>不安全</p>
+<h3 id="目前的多进程架构"><a href="#目前的多进程架构" class="headerlink" title="目前的多进程架构"></a>目前的多进程架构</h3><ul>
+<li><strong>浏览器主进程</strong>。主要负责界面显示、用户交互、子进程管理，同时提供存储等功能。</li>
+<li><strong>渲染进程</strong>。核心任务是将 HTML、CSS 和 JavaScript 转换为用户可以与之交互的网页，排版引擎 Blink 和 JavaScript 引擎 V8 都是运行在该进程中，默认情况下，Chrome 会为每个 Tab 标签创建一个渲染进程。出于安全考虑，渲染进程都是运行在沙箱模式下。</li>
+<li><strong>GPU 进程</strong>。其实，Chrome 刚开始发布的时候是没有 GPU 进程的。而 GPU 的使用初衷是为了实现 3D CSS 的效果，只是随后网页、Chrome 的 UI 界面都选择采用 GPU 来绘制，这使得 GPU 成为浏览器普遍的需求。最后，Chrome 在其多进程架构上也引入了 GPU 进程。</li>
+<li><strong>网络进程</strong>。主要负责页面的网络资源加载，之前是作为一个模块运行在浏览器进程里面的，直至最近才独立出来，成为一个单独的进程。</li>
+<li><strong>插件进程</strong>。主要是负责插件的运行，因插件易崩溃，所以需要通过插件进程来隔离，以保证插件进程崩溃不会对浏览器和页面造成影响。</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<p><strong>更高的资源占</strong>用因为每个进程都会包含公共基础结构的副本（如 JavaScript 运行环境），这就意味着浏览器会消耗更多的内存资源。</p>
+<p><strong>更复杂的体系架构</strong>浏览器各模块之间耦合性高、扩展性差等问题，会导致现在的架构已经很难适应新的需求了</p>
+<h3 id="未来面向服务的架构"><a href="#未来面向服务的架构" class="headerlink" title="未来面向服务的架构"></a>未来面向服务的架构</h3><p>为了解决这些问题，在 2016 年，Chrome 官方团队使用“面向服务的架构”（Services Oriented Architecture，简称 SOA）的思想设计了新的 Chrome 架构<br>Chrome 最终要把 UI、数据库、文件、设备、网络等模块重构为基础服务，类似操作系统底层服务。</p>
+<h2 id="渲染引擎（浏览器内核）"><a href="#渲染引擎（浏览器内核）" class="headerlink" title="渲染引擎（浏览器内核）"></a>渲染引擎（浏览器内核）</h2><ul>
+<li><strong>GUI渲染线程</strong>：GUI 渲染线程负责渲染浏览器界面，解析 HTML，CSS，构建 DOM 树和 RenderObject 树，布局和绘制等。当界面需要重绘（Repaint）或由于某种操作引发回流（Reflow）时，该线程就会执行。</li>
+<li><strong>JavaScript引擎线程</strong>: JavaScript 引擎线程主要负责解析 JavaScript 脚本并运行相关代码。 JavaScript 引擎在一个Tab页（Renderer 进程）中无论什么时候都只有一个 JavaScript 线程在运行 JavaScript 程序。需要提起一点就是，GUI线程与JavaScript引擎线程是互斥的，这也是就是为什么JavaScript操作时间过长，会造成页面渲染不连贯，导致页面出现阻塞的原理</li>
+<li><strong>事件触发线程</strong>：当一个事件被触发时该线程会把事件添加到待处理队列的队尾，等待 JavaScript 引擎的处理。 通常JavaScript引擎是单线程的，所以这些事件都会排队等待JS执行</li>
+<li><strong>定时器触发器</strong>： 我们日常使用的setInterval 和 setTimeout 就在该线程中，原因可能就是：由于JS引擎是单线程的，如果处于阻塞线程状态就会影响记时的准确，所以需要通过单独的线程来记时并触发响应的事件这样子更为合理</li>
+<li><strong>Http请求线程</strong>： 在 XMLHttpRequest 在连接后是通过浏览器新开一个线程请求，这个线程就Http请求线程，它将检测到状态变更时，如果设置有回调函数，异步线程就产生状态变更事件放到 JavaScript 引擎的处理队列中等待处理</li>
+</ul>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6846687590540640263">浏览器架构</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903489596833800">HTTP发展历史</a></li>
+<li><a target="_blank" rel="noopener" href="https://heapdump.cn/article/3576099">性能优化之html、css、js三者的加载顺序</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/11/26/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" data-id="clpuo0yvk000kotmuda8ra5zn" class="article-share-link">
+        Share
+      </a>
+      
+    </footer>
+
+  </div>
+
+  
+  
+<nav class="article-nav">
+  
+  <a href="/2021/07/13/React%20Context%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%AE%9E%E8%B7%B5/" class="article-nav-link">
+    <strong class="article-nav-caption">Newer</strong>
+    <div class="article-nav-title">
+      
+      React Context从入门到实践
+      
+    </div>
+  </a>
+  
+  
+  <a href="/2020/11/06/Git%E6%8C%87%E4%BB%A4/" class="article-nav-link">
+    <strong class="article-nav-caption">Older</strong>
+    <div class="article-nav-title">git指令</div>
+  </a>
+  
+</nav>
+
+  
+
+  
+  
+  
+  
+
+</article>
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>Hexo &copy; 2023</li>
+      
+        <li>quhandong</li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <!-- <li>theme  <a target="_blank" rel="noopener" href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li> -->
+    </ul>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="Hexo"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">Home</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">Archives</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.douyin.com/user/MS4wLjABAAAA4EevfdHrS1s-urfPJWWJEs-_c_qLu19jtr-eYdpBNBk?enter_from=main_page&enter_method=top_bar">Gallery</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2022/07/01/README/">About</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/copybtn.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+
+</html>
